@@ -1,0 +1,27 @@
+{
+	"title": "Menéame: analizing a social news website",
+	"members": [
+		{
+			"name": "Albert Fernández de la Peña",
+			"study_number": "s112213"
+		},
+		{
+			"name": "Ferdinando Papale",
+			"study_number": "s121035"
+		},
+		{
+			"name": "José Luis Bellod Cisneros",
+			"study_number": "s101605"
+		}
+	],
+	"description": "The project will data mine a Spanish social news website (similar to Reddit). We will mine both news,
+		their description and other users comments to those news. We will analyze the network of users, how clustered are
+		the discussions, analyze the sentiment of the news and see which news have more comments. We will present the 
+		results in an interactive website.",
+	"modules": [
+		"nltk",
+		"requests",
+		"django",
+		"pandas"
+	]
+}
