@@ -104,7 +104,7 @@ def extract_stories(text):
 
 def scrap_story_comments(id, url, output_dir, overwrite):
 	
-	path = os.path.join(output_dir, 'comments', MENEAME_COMMENT_FILE % id)
+	path = os.path.join(output_dir, 'raw', 'comments', MENEAME_COMMENT_FILE % id)
 
 	if not os.path.exists(path) or overwrite:
 		logging.info('Scrapping comments for %d ...' % id)
