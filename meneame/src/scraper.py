@@ -129,7 +129,7 @@ def scrap_stories(base_url, time_range, page_start, page_end, output_dir, overwr
 		
 	while current_page != page_end and not no_more_pages:
 		
-		current_page_path = os.path.join(output_dir, 'news', MENEAME_STORY_NAME
+		current_page_path = os.path.join(output_dir, 'raw', 'news', MENEAME_STORY_NAME
 			% (time_range, current_page))
 		
 		if not os.path.exists(current_page_path) or overwrite:
@@ -208,7 +208,7 @@ def main():
 	logging.info('finished scraping stories ...')
 	logging.info('starting to parse comments ...')
 	
-	filenames = glob.glob(os.path.join(args.output, 'news', '*.json'))
+	filenames = glob.glob(os.path.join(args.output, 'raw', 'news', '*.json'))
 	num_files = len(filenames)
 	for num, filename in enumerate(filenames):
 		if num % 10 == 0:
