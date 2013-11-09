@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% block css %}
+<link href="assets/css/dc.css" rel="stylesheet">
+<style>
+.day {
+  fill: #fff;
+  stroke: #ccc;
+}
+
+.month {
+  fill: none;
+  stroke: #000;
+  stroke-width: 2px;
+}
+
+.RdYlGn .q0-11{fill:rgb(165,0,38)}
+.RdYlGn .q1-11{fill:rgb(215,48,39)}
+.RdYlGn .q2-11{fill:rgb(244,109,67)}
+.RdYlGn .q3-11{fill:rgb(253,174,97)}
+.RdYlGn .q4-11{fill:rgb(254,224,139)}
+.RdYlGn .q5-11{fill:rgb(255,255,191)}
+.RdYlGn .q6-11{fill:rgb(217,239,139)}
+.RdYlGn .q7-11{fill:rgb(166,217,106)}
+.RdYlGn .q8-11{fill:rgb(102,189,99)}
+.RdYlGn .q9-11{fill:rgb(26,152,80)}
+.RdYlGn .q10-11{fill:rgb(0,104,55)}
+</style>
+{% endblock %}
+{% block content %}
+
+<div class="container">
+<div class="page-header">
+  <h1>Sentiment Analysis <small>Overview</small></h1>
+</div>
+<div class="row">
+	<div id="day-week-chart" class="sentiment-chart">
+		<strong>Day of the week</strong>
+		<div class="clearfix"></div>
+	</div>
+	<div id="sentiment-chart" class="sentiment-chart">
+		<strong>Sentiment</strong>
+		<div class="clearfix"></div>
+	</div>
+</div>
+
+<div clas="row">
+	<div id="move-chart" class="sentiment-chart">
+		<strong>Month</strong>
+		<div class="clearfix"></div>
+	</div>
+</div>
+</div>
+
+<div class="container">
+<div class="page-header">
+  <h1>Year overview <small>Calendar</small></h1>
+  <div class="row">
+  	<div class="col-8">
+  		<div id="sentiments-calendar"></div>
+  	</div>
+  	<div id="selected-day" class="col-4">
+  	</div>
+  </div>
+</div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script src="assets/js/sentiment.js"></script>
+<script src="assets/js/sentiment-calendar.js"></script>
+{% endblock %}

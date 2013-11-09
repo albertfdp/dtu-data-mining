@@ -37,7 +37,7 @@
 				<ul class="nav navbar-nav">
 					{% block navbar_home %}<li><a href="index">{% endblock %}Home</a></li>
 					{% block navbar_network %}<li><a href="#network">{% endblock %}Network Analysis</a></li>
-					{% block navbar_sentiment %}<li><a href="#network">{% endblock %}Sentiment Analysis</a></li>
+					{% block navbar_sentiment %}<li><a href="sentiment">{% endblock %}Sentiment Analysis</a></li>
 					{% block navbar_topic %}<li><a href="#network">{% endblock %}Topic Analysis</a></li>
 					{% block navbar_about %}<li><a href="about">{% endblock %}About</a></li>
 				</ul>
@@ -58,6 +58,10 @@
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="assets/js/jquery.js"></script>
     <script src="assets/js/bootstrap.min.js"></script>
+    <script src="assets/js/d3.v3.js"></script>
+    <script src="assets/js/crossfilter.js"></script>
+    <script src="assets/js/dc.js"></script>
+    <script src="assets/js/colorbrewer.js"></script>
 	{% block scripts %}{% endblock %}
   </body>
   </html>

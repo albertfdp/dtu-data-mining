@@ -16,11 +16,12 @@
 #
 import webapp2
 import fix_path
-from control import main, time, about
+from control import main, time, about, sentiment
 
 app = webapp2.WSGIApplication([
     ('/', main.MainHandler),
     ('/index', main.MainHandler),
 	('/time', time.TimeHandler),
+	('/sentiment', sentiment.SentimentHandler),
 	('/about', about.AboutHandler)
 ], debug=True)
