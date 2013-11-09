@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="shortcut icon" href="../../assets/ico/favicon.png">
+
+    <title>{{ title }}</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="assets/css/bootstrap.css" rel="stylesheet">
+	<link href="assets/css/meneapp.css" rel="stylesheet">
+	{% block css %}{% endblock %}
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="../../assets/js/html5shiv.js"></script>
+      <script src="../../assets/js/respond.min.js"></script>
+    <![endif]-->
+
+	{% block head %}{% endblock %}
+  </head>
+  <body>
+	<div class="navbar navbar-default navbar-static-top">
+		<div class="container">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="#">{{ project_name }}</a>
+			</div>
+			<div class="navbar-collapse collapse">
+				<ul class="nav navbar-nav">
+					{% block navbar_home %}<li><a href="index">{% endblock %}Home</a></li>
+					{% block navbar_network %}<li><a href="#network">{% endblock %}Network Analysis</a></li>
+					{% block navbar_sentiment %}<li><a href="#network">{% endblock %}Sentiment Analysis</a></li>
+					{% block navbar_topic %}<li><a href="#network">{% endblock %}Topic Analysis</a></li>
+					{% block navbar_about %}<li><a href="about">{% endblock %}About</a></li>
+				</ul>
+			</div> <!-- navbar-collapse collapse -->
+		</div> <!-- container -->
+	</div> <!-- navbar navbar-inverse navbar-static-top -->
+	
+	<div class="container">
+		{% block content %}{% endblock %}
+	
+		<!-- FOOTER -->
+		<footer>
+			<!--<p>&copy; 2013 albert - ferdinando - jose &middot;-->
+		</footer>
+	</div>
+	 <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="assets/js/jquery.js"></script>
+    <script src="assets/js/bootstrap.min.js"></script>
+	{% block scripts %}{% endblock %}
+  </body>
+  </html>
