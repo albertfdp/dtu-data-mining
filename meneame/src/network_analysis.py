@@ -1,102 +1,137 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-Created on Wed Oct 16 15:25:53 2013
-
-@author: ferdinando
+The aim of this script is to analyze in various ways the meneame network.
 """
 import igraph as ig
-import couchdb
-import logging
-import sys
-import itertools
 import collections
 import matplotlib.pyplot as plt
 
-logging.basicConfig(filename='network_creator.log',level=logging.DEBUG, filemode='w')
-logging.basicConfig(format='%(asctime)s %(message)s')
+
+#TODO eventually add parameters description for functions
+def filter_graph(graph, max_val):
+    """Return the filtered graph, considering only the vertices that have a
+    comments attribute bigger than max_val.
+    """
+    gs = graph.vs.select(comments_gt=max_val)
+    vertices_list = [el.index for el in gs]
+    return graph.subgraph(vertices_list)
 
 
-#Connection with the databases
-try:
-    couch = couchdb.Server()
-    news_db = couch['meneame']
-except Exception, err:
-    logging.exception("Problem with retrieving the databases \n")
-    logging.exception(err)
-    sys.exit(1)
+def save_degree_distribution(graph):
+    """Save the degree distribution of the input graph to file"""
+    degree_dist = graph.degree_distribution()
+    x = [el[0] for el in degree_dist.bins()]
+    y = [el[2] for el in degree_dist.bins()]
 
-logging.info('Connection to the databases estabilished')
-
-
-g = ig.Graph()
-
-#Creating vertices and edges collections
-vertices = collections.Counter()
-edges = collections.Counter()
-
-count = 0
-for article in news_db:
-    count+=1
-    if count == 500: #for testing!!!
-        break
-    item = dict(news_db.get(article))['commenters']            
-    vertices.update(**item)
-    edges.update(itertools.combinations(item.keys(), 2))
+    title = "Network Degree Distribution"
+    xlabel = "Degree"
+    ylabel = "Number of nodes"
+    filename = "degree_distribution.png"
+    save_histogram(x, y, title, xlabel, ylabel, filename)
 
 
-#Creating the graph
-#we need to do all of this for performances reasons
-# if we update the edges very often, it will be very inefficient, because
-# the edges are indexed, and the indexed is done from the beginning every 
-# edges list update
+def save_weights_distribution(weight_list):
+    """Saves the weigth distribution to file"""
+    co = collections.Counter(weight_list)
+    x = [el for el in co]
+    y = [co[el] for el in co]
 
-usernames = vertices.keys()    
-comments = vertices.values()
-users_dic = { name: idx for (idx,name) in enumerate(usernames)}
-n_users = len(usernames)
-
-    
-edges_list = [(users_dic[el1],users_dic[el2]) for (el1,el2) in edges.keys()]
-weights_list = edges.values()
-n_edges = len(edges_list)
-
-vertex_attrs = {'name':usernames, 'comments':comments}
-edge_attrs={'weight': weights_list}
-g = ig.Graph(n=n_users, edges=edges_list, vertex_attrs=vertex_attrs,
-             edge_attrs=edge_attrs)
-             
-
-"""
-    Constructs a graph from scratch.
-    
-    @keyword n: the number of vertices. Can be omitted, the default is
-      zero.
-    @keyword edges: the edge list where every list item is a pair of
-      integers. If any of the integers is larger than M{n-1}, the number
-      of vertices is adjusted accordingly.
-    @keyword directed: whether the graph should be directed
-    @keyword graph_attrs: the attributes of the graph as a dictionary.
-    @keyword vertex_attrs: the attributes of the vertices as a dictionary.
-      Every dictionary value must be an iterable with exactly M{n} items.
-    @keyword edge_attrs: the attributes of the edges as a dictionary. Every
-      dictionary value must be an iterable with exactly M{m} items where
-      M{m} is the number of edges.
-
-"""
-#max, min, average, variance?
-
-print "Number of users: ", n_users
-print "Number of connections: ", n_edges
-print "Max. number of comments: ", max(comments)
-print "Max. number of articles together: ", max(weights_list)
+    title = "Weights distribution"
+    xlabel = "Weight"
+    ylabel = "Number of edges"
+    filename = "weights_distribution.png"
+    save_histogram(x, y, title, xlabel, ylabel, filename)
 
 
-degree_sequence = sorted(g.indegree(), reverse=True)
-#plt.yscale('log')
-#plt.plot(degree_sequence,'b-')
-plt.figure()
-plt.hist(degree_sequence,len(g.indegree()),log=True)
-plt.figure()
-xs, ys = zip(*[(left, count) for left, _, count in g.degree_distribution().bins()])
-plt.bar(xs, ys)
-plt.show()
+def save_histogram(x, y, title, xlabel, ylabel, filename):
+    """Create an histogram from the input x and y and saves it to file"""
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+    ax.plot(x, y)
+    ax.set_xscale('log')
+    ax.set_yscale('log')
+    plt.ylabel(ylabel)
+    plt.xlabel(xlabel)
+    plt.title(title)
+    plt.savefig("images/" + filename)
+
+
+def community_analysis(graph):
+    """Analyze the communities of the input graph"""
+    print "\nCOMMUNITY ANALYSIS\n"
+
+    """
+    communities = graph.community_infomap(edge_weights='weight',
+                                          vertex_weights='comments',
+                                          trials=10)
+    print "Infomap  ", communities.summary()
+    print "Sizes of communities: ", communities.sizes()
+    single_community_analysis(communities)
+    """
+
+
+    communities = graph.community_multilevel(weights='weight')
+    print "Multilevel ", communities.summary()
+    print "Sizes of communities: ", communities.sizes()
+    single_community_analysis(communities)
+
+def single_community_analysis(communities):
+    """Analyze a single community. """
+    n_comm = len(communities.sizes())
+    if n_comm > 1:
+        for idx in range(n_comm):
+            print "Community number ", idx, "\n"
+            general_analysis(communities.subgraph(idx))
+
+
+
+
+def general_analysis(graph):
+    """Print to screen some basic information regarding the input graph"""
+    comments = graph.vs['comments']
+    weights = graph.es['weight']
+
+    print "GENERAL ANALYSIS\n"
+
+    print "Number of users: ", graph.vcount()
+    print "Number of links: ", graph.ecount()
+
+    print "\nMax. number of comment per user: ", max(comments)
+    print "Min. number of comment per user: ", min(comments)
+    print "Average number of comments: ", float(sum(comments)) / len(comments)
+
+    print "\nMax. value of weight: ", max(weights)
+    print "Min. value of weight: ", min(weights)
+    print "Average weight: ", float(sum(weights)) / len(weights)
+
+    print "\nClustering coefficient: ", graph.transitivity_undirected()
+
+    components = graph.components()
+    print "\nNumber of connected components: ", len(components.sizes())
+
+    print "\nAverage path length: ", graph.average_path_length()
+
+
+def main():
+    """Main function"""
+    graph = ig.load("meneame_network.pickle")
+
+    #general_analysis(graph)
+
+    community_analysis(graph)
+
+    #save_degree_distribution(g)
+    #save_weights_distribution(weights)
+
+    #graph.write('meneame_network.graphml')
+
+    #fil_g = filter_graph(graph, 20) #TODO
+    #general_analysis(fil_g)
+    #fil_g.write('meneame_network_filtered.graphml')
+
+    #fil_g.save("filtered_network.pickle")
+
+
+if __name__ == '__main__':
+    main()

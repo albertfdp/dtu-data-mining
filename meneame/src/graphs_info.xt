@@ -1,0 +1,38 @@
+GENERAL ANALYSIS
+
+Number of users:  19823
+Number of links:  9154469
+Max. number of comment per user:  4098
+Min. number of comment per user:  1
+Average number of comments:  46.0490339505
+Max. value of weight:  454
+Min. value of weight:  1
+Average weight:  2.07074141489
+Clustering coefficient:  0.360344335114
+Number of connected components:  1
+Average path length:  1.9805993414
+
+COMMUNITY ANALYSIS
+
+Multilevel   Clustering with 19823 elements and 4 clusters
+Sizes of communities:  [5430, 3952, 4061, 6380]
+
+
+COMMENTS:
+
+0 19823
+2 12800
+4 10420
+6 9022
+8 8098
+10 7412
+12 6885
+14 6423
+16 6054
+18 5755
+20 5485
+22 5230
+24 4978
+26 4766
+28 4591
+30 4435
