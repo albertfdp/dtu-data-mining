@@ -3,12 +3,14 @@
 """
 The aim of the script is to build the network of users of meneame, defined
 as follows:
-    - Each vertex is a user that has commented in one of the articles we
-    analyzed. Each vertex has an attribute, "comments", that represents
-    the total number of comments an user has posted
-    - There is an edge between two users if they posted in the same article.
-    Each edge has a weight representing the number of articles in which they
+
+* Each vertex is a user that has commented in one of the articles we\
+    analyzed. Each *vertex* has an attribute, "comments", that represents\
+    the total number of comments an user has posted;
+* There is an *edge* between two users if they posted in the same article.\
+    Each edge has a weight representing the number of articles in which they\
     posted together.
+
 After the network has been created, it is pickled for subsequent analysis.
 """
 import igraph as ig
@@ -21,12 +23,13 @@ import collections
 def create_graph(vertices, edges):
     """Return the graph object, given the edges and vertices collections.
 
-    Keyword arguments:
-    vertices -- collection of vertices, where each element is in the format
+
+    :param vertices: collection of vertices, where each element is in the format
         username: number_of_comments
-    edges -- collection of edges, where each element is in the format
+    :param edges: collection of edges, where each element is in the format
         (username1, username2): weight, where the weight is the number
         of articles in which the two users have commented together
+    :returns: the igraph object
 
     The creation of the graph is done only on the final step of the
     function, due to the way igraph deals with the edges.

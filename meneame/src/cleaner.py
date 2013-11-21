@@ -2,9 +2,10 @@
 # -*- coding: utf-8 -*-
 """
 This script aim is two-fold:
-    - Update the database with a cleaned version of the content of the
+
+* Update the database with a cleaned version of the content of the
     articles comments, with all the html tags stripped;
-    - Update the database with a dictionary of commenters for each article.
+* Update the database with a dictionary of commenters for each article.
     In particular, the keys of the dictionary will be commenters, while the
     values will be the number of comments.
 
@@ -18,7 +19,11 @@ from bs4 import BeautifulSoup
 
 
 def strip_html_tags(html):
-    """Strip out all html tags from the input text."""
+    """Strip out all html tags from the input text.
+
+        :param html: input html string
+        :returns: the input string stripped of all html tags
+    """
     return ''.join(BeautifulSoup(html).findAll(text=True))
 
 

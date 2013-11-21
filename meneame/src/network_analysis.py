@@ -7,16 +7,29 @@ import igraph as ig
 import collections
 import matplotlib.pyplot as plt
 
+IMAGES_FOLDER = "images/"
 
 #TODO eventually add parameters description for functions
-def filter_graph(graph, max_val):
+def remove_weak_users(graph, min_val):
     """Return the filtered graph, considering only the vertices that have a
-    comments attribute bigger than max_val.
+    comments attribute bigger than min_val.
     """
-    gs = graph.vs.select(comments_gt=max_val)
+    gs = graph.vs.select(comments_gt=min_val)
     vertices_list = [el.index for el in gs]
     return graph.subgraph(vertices_list)
 
+def remove_weak_edges(graph, min_val):
+    """TODO"""
+    we = graph.es.select(weight_lt=min_val)
+    weak_edges = [el.index for el in we]
+    graph.delete_edges(weak_edges)
+    return graph
+
+def remove_lonely_nodes(graph):
+    """TODO"""
+    gs = graph.vs.select(_degree_gt=0)
+    vertices_list = [el.index for el in gs]
+    return graph.subgraph(vertices_list)
 
 def save_degree_distribution(graph):
     """Save the degree distribution of the input graph to file"""
@@ -27,20 +40,22 @@ def save_degree_distribution(graph):
     title = "Network Degree Distribution"
     xlabel = "Degree"
     ylabel = "Number of nodes"
-    filename = "degree_distribution.png"
+    filename = graph['name'] + "_degree_distribution"
     save_histogram(x, y, title, xlabel, ylabel, filename)
 
 
-def save_weights_distribution(weight_list):
+def save_weights_distribution(graph):
     """Saves the weigth distribution to file"""
-    co = collections.Counter(weight_list)
+    weights = graph.es['weight']
+
+    co = collections.Counter(weights)
     x = [el for el in co]
     y = [co[el] for el in co]
 
     title = "Weights distribution"
     xlabel = "Weight"
     ylabel = "Number of edges"
-    filename = "weights_distribution.png"
+    filename = graph['name'] + "_weights_distribution"
     save_histogram(x, y, title, xlabel, ylabel, filename)
 
 
@@ -54,14 +69,16 @@ def save_histogram(x, y, title, xlabel, ylabel, filename):
     plt.ylabel(ylabel)
     plt.xlabel(xlabel)
     plt.title(title)
-    plt.savefig("images/" + filename)
+    plt.savefig(IMAGES_FOLDER + filename + '.png')
+    plt.savefig(IMAGES_FOLDER + filename + '.pdf')
+
 
 
 def community_analysis(graph):
     """Analyze the communities of the input graph"""
     print "\nCOMMUNITY ANALYSIS\n"
 
-    """
+
     communities = graph.community_infomap(edge_weights='weight',
                                           vertex_weights='comments',
                                           trials=10)
@@ -75,6 +92,7 @@ def community_analysis(graph):
     print "Multilevel ", communities.summary()
     print "Sizes of communities: ", communities.sizes()
     single_community_analysis(communities)
+    """
 
 def single_community_analysis(communities):
     """Analyze a single community. """
@@ -105,30 +123,36 @@ def general_analysis(graph):
     print "Min. value of weight: ", min(weights)
     print "Average weight: ", float(sum(weights)) / len(weights)
 
-    print "\nClustering coefficient: ", graph.transitivity_undirected()
+    #print "\nClustering coefficient: ", graph.transitivity_undirected()
 
     components = graph.components()
     print "\nNumber of connected components: ", len(components.sizes())
 
-    print "\nAverage path length: ", graph.average_path_length()
+    #print "\nAverage path length: ", graph.average_path_length()
 
 
 def main():
     """Main function"""
     graph = ig.load("meneame_network.pickle")
+    graph['name'] = 'meneame'
 
-    #general_analysis(graph)
+    general_analysis(graph)
 
-    community_analysis(graph)
+    #community_analysis(graph)
 
-    #save_degree_distribution(g)
-    #save_weights_distribution(weights)
+    #save_degree_distribution(graph)
+    #save_weights_distribution(graph)
 
     #graph.write('meneame_network.graphml')
 
-    #fil_g = filter_graph(graph, 20) #TODO
+
+    graph = remove_weak_users(graph, 1) #TODO
+    graph = remove_weak_edges(graph,25)
+    general_analysis(graph)
+    graph = remove_lonely_nodes(graph)
+    general_analysis(graph)
     #general_analysis(fil_g)
-    #fil_g.write('meneame_network_filtered.graphml')
+    graph.write('meneame_network_filtered.graphml')
 
     #fil_g.save("filtered_network.pickle")
 
