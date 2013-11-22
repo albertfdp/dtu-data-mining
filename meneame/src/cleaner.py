@@ -28,7 +28,7 @@ def strip_html_tags(html):
 
 
 def test_strip_html_tags():
-    """Test for the strip_html_tags function"""
+    """Test for the strip_html_tags function."""
     text = list()
     stripped = list()
 
@@ -46,6 +46,7 @@ def test_strip_html_tags():
 
     for i in range(len(text)):
         assert strip_html_tags(text[i]) == stripped[i]
+
 
 def main():
     """Main function. """
