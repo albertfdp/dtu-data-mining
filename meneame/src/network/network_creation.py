@@ -13,6 +13,7 @@ as follows:
 
 After the network has been created, it is pickled for subsequent analysis.
 """
+
 import igraph as ig
 import couchdb
 import sys
@@ -23,12 +24,11 @@ import collections
 def create_graph(vertices, edges):
     """Return the graph object, given the edges and vertices collections.
 
-
-    :param vertices: collection of vertices, where each element is in the format
-        username: number_of_comments
-    :param edges: collection of edges, where each element is in the format
-        (username1, username2): weight, where the weight is the number
-        of articles in which the two users have commented together
+    :param vertices: collection of vertices, where each element is in the
+        \format "username: number_of_comments"
+    :param edges: collection of edges, where each element is in the format\
+        (username1, username2): weight, where the weight is the number\
+        of articles in which the two users have commented together\
     :returns: the igraph object
 
     The creation of the graph is done only on the final step of the
