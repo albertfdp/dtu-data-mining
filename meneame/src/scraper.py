@@ -37,6 +37,9 @@ MENEAME_TOP_STORIES_URL = MENEAME_BASE_URL + "/topstories.php"
 MENEAME_COMMENT_RSS_URL = MENEAME_BASE_URL + "/comments_rss2.php"
 
 def extract_comments(story, comments_file, output_file):
+	"""
+		Bla bla. Hell Yeah.
+	"""
 	with open(comments_file, 'r') as f:
 		comments = feedparser.parse(f.read())
 		story['published'] = comments.feed.published
