@@ -11,8 +11,6 @@ This script aim is two-fold:
 
 Those two operations are necessary for the subsequent analysis.
 """
-import logging
-import sys
 from bs4 import BeautifulSoup
 
 

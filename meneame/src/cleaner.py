@@ -16,6 +16,7 @@ import couchdb
 import logging
 import sys
 
+
 def main():
     """Main function. """
     logging.basicConfig(filename='cleaner.log',
