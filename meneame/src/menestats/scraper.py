@@ -69,6 +69,11 @@ def extract_stories(text):
     """
         Parses an HTML page and builds a list of MeneameStory
     """
+
+    f = open('test.html', 'w')
+    f.write(text.encode('utf-8'))
+    f.close()
+
     parsed_stories = []
 
     soup = BeautifulSoup(text)
@@ -93,8 +98,12 @@ def extract_stories(text):
         # number of clicks
         clicks = story.find('div', {'class': 'clics'})
         clicks_regex = re.match(r'\s*(\d*)\s.*', clicks.string)
-        if clicks_regex:
-            meneame_story.clicks = int(clicks_regex.group(1))
+        try:
+            if clicks_regex:
+                meneame_story.clicks = int(clicks_regex.group(1))
+        except ValueError as ve:
+            logging.error('Error reading clicks for story %s', meneame_story.id)
+            meneame_story.clicks = 0
 
         # extract the user id
         user_a = story.find('a', {'class': 'tooltip'})
@@ -103,7 +112,11 @@ def extract_stories(text):
             meneame_story.author = user_regex.group(1)
 
         # extract description
-        meneame_story.description = story.contents[8]
+        try:
+            meneame_story.description = story.contents[8]
+        except IndexError as ie:
+            logging.error('Error reading description for story %s', meneame_story.id)
+            meneame_story.description = story.contents
 
         parsed_stories.append(meneame_story)
     return parsed_stories

@@ -8,7 +8,7 @@ class MeneameStory(object):
     """
     def __init__(self, sid=None, votes=None, clicks=None, title=None,
         url=None, author=None, description=None, published=None, comments=None):
-        self.sid = sid
+        self.id = sid
         self.votes = votes
         self.clicks = clicks
         self.title = title
@@ -23,7 +23,7 @@ class MeneameStory(object):
             Converts the class to a dictionary to be handled as a JSON
         """
         out = {}
-        out['_id'] = str(self.sid)
+        out['_id'] = str(self.id)
         out['votes'] = self.votes
         out['clicks'] = self.clicks
         out['title'] = self.title

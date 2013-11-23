@@ -8,7 +8,7 @@ Usage:
 Options:
     -h, --help      show this screen.
     --version       show version.
-    -o DIRECTORY    output directory [default: mename].
+    -o DIRECTORY    output directory [default: meneame].
     --start START   specify start page [default: 0].
     --timeout TIME  specify timeout after each request [default: 0].
     --range RANGE   specify the range. valid options\
@@ -36,22 +36,25 @@ def download_news(output, start=0, time_range=1, pause=1):
 
     while more_news:
         stories = scrap_page(time_range, current_page)
+        logging.info('Page %s: [%s]', current_page, ",".join([str(story.id) for story in stories]))
         for story in stories:
             filepath = os.path.join(output_dir, '%s.json' % story.id)
-
             if not os.path.exists(filepath):
                 logging.debug('Downloading comments for %s', story.id)
                 story.published, story.comments = scrap_comments(story.id)
-                logging.info('Writing %s ...', filepath)
+                logging.debug('Writing %s ...', filepath)
                 filename = open(filepath, 'w')
                 json.dump(story.to_dict(), filename)
                 filename.close()
+                sleep(pause)
+            else:
+                logging.warning('File %s already exists...' % story.id)
+
 
         if not stories:
             more_news = False
 
         current_page += 1
-        sleep(pause)
 
 
 if __name__ == '__main__':
@@ -59,15 +62,19 @@ if __name__ == '__main__':
 
     # define logging configuration
     logging.basicConfig(
-        level=logging.DEBUG,
+        level=logging.INFO,
         format='%(asctime)s %(levelname)-8s %(message)s')
 
     # transform the time range to index
-    TIMERANGE = ['24h', '48h',
-                         'week', 'month', 'year',
-                         'all'].index(ARGS['--range'])
+    try:
+        TIMERANGE = ['24h', '48h',
+                            'week', 'month', 'year',
+                            'all'].index(ARGS['--range'])
+    except ValueError:
+        logging.error('Error reading time range, not valid. Using default value [24h].')
+        TIMERANGE = 0
 
-    download_news(ARGS['-o'],
-                  int(ARGS['--start']),
-                  TIMERANGE,
-                  int(ARGS['--timeout']))
+    download_news(output=ARGS['-o'],
+                  start=int(ARGS['--start']),
+                  time_range=TIMERANGE,
+                  pause=int(ARGS['--timeout']))
