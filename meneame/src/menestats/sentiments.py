@@ -6,7 +6,8 @@
 from nltk.tokenize import PunktWordTokenizer
 from nltk.stem import SnowballStemmer
 
-stemmer = SnowballStemmer('spanish')
+STEMMER = SnowballStemmer('spanish')
+
 
 def get_sentiment(sentiment_db, txt):
     """
@@ -29,3 +30,28 @@ def get_sentiment(sentiment_db, txt):
         return valence, arousal
     else:
         return None
+
+
+def test_get_sentiments():
+    """
+        Test get_sentiment function.
+    """
+
+    import os
+    import csv
+
+    csvfile = open(os.path.join(os.path.dirname(__file__),
+                   'test_anew.csv'), 'r')
+
+    reader = csv.reader(csvfile, delimiter=',')
+    reader.next()  # skip headers
+    anew = dict([(STEMMER.stem(unicode(row[2], 'utf-8')),
+                  {'valence': float(row[3]),
+                   'arousal': float(row[5])}) for row in reader])
+
+    text = """En realidad los filósofos griegos importantes \
+odiaban la democracia (ENG)"""
+
+    valence, arousal = get_sentiment(anew, text.decode('utf-8'))
+    assert valence == 1.74
+    assert arousal == 7.01

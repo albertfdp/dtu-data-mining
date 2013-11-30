@@ -10,6 +10,7 @@ import logging
 import feedparser
 from bs4 import BeautifulSoup
 import re
+import os
 
 MENEAME_BASE_URL = 'http://www.meneame.net'
 MENEAME_TOP_STORIES_URL = MENEAME_BASE_URL + "/topstories.php"
@@ -47,7 +48,7 @@ def scrap_comments(sid):
     """
     params = {'id': int(sid)}
     req = requests.get(MENEAME_COMMENTS_RSS_URL, params=params)
-    logging.info('Scrap comments %s ...' , req.url)
+    logging.info('Scrap comments %s ...', req.url)
     published, comments = extract_comments(sid, req.text)
     return published, comments
 
@@ -69,10 +70,6 @@ def extract_stories(text):
     """
         Parses an HTML page and builds a list of MeneameStory
     """
-
-    f = open('test.html', 'w')
-    f.write(text.encode('utf-8'))
-    f.close()
 
     parsed_stories = []
 
@@ -101,8 +98,9 @@ def extract_stories(text):
         try:
             if clicks_regex:
                 meneame_story.clicks = int(clicks_regex.group(1))
-        except ValueError as ve:
-            logging.error('Error reading clicks for story %s', meneame_story.id)
+        except ValueError:
+            logging.error('Error reading clicks for story %s',
+                          meneame_story.id)
             meneame_story.clicks = 0
 
         # extract the user id
@@ -114,9 +112,56 @@ def extract_stories(text):
         # extract description
         try:
             meneame_story.description = story.contents[8]
-        except IndexError as ie:
-            logging.error('Error reading description for story %s', meneame_story.id)
+        except IndexError:
+            logging.error('Error reading description for story %s',
+                          meneame_story.id)
             meneame_story.description = story.contents
 
         parsed_stories.append(meneame_story)
     return parsed_stories
+
+
+def test_extract_stories():
+    """
+        Test for the extract_stories function.
+    """
+
+    test_data = open(os.path.join(os.path.dirname(__file__),
+                     'test_data.html')).read()
+    stories = extract_stories(test_data)
+
+    # assert there are 15 stories parsed
+    assert len(stories) is 15
+
+    # assert that each story has id, author, description, ....
+    story = stories[0]
+    assert story.id == 2066791
+    assert story.title == u"La Policía intenta cerrar Canal 9 \
+    y los trabajadores lo impiden. #RTVVnoestanca "
+    assert story.votes == 711
+    assert story.clicks == 2848
+    assert story.url == u"https://www.youtube.com/watch?v=c6mX4owi1fY"
+    assert story.author == u"ninyobolsa"
+    assert story.description == u"""  Los trabajadores de RTVV,\
+encerrados en el Estudio 4 de Canal9 en la que parece ser la úl\
+tima noche de emisión de la cadena valenciana, se aglutinan en \
+la sala del control central para impedir la entrada de los agen\
+tes de Policía que pretenden cortar el cable que emite las imág\
+enes, y lo logran. Relacionada:"""
+
+
+def test_extract_comments():
+    """
+        Test for the extract_comments function.
+    """
+    test_data = open(os.path.join(
+                     os.path.dirname(__file__), 'test_comments.xml')).read()
+    published, comments = extract_comments(2067716, test_data)
+    assert len(comments) is 77
+    assert published == u'Sat, 30 Nov 2013 00:31:00 +0000'
+    comment = comments[0]
+    assert comment.order == u'77'
+    assert comment.karma == u'18'
+    assert comment.user == u'Lucer'
+    assert comment.published == u'Sat, 30 Nov 2013 00:31:00 +0000'
+    assert comment.id == u'13918274'
