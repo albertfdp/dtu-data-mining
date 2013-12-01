@@ -8,10 +8,10 @@ var day = d3.time.format("%w"),
     format = d3.time.format("%Y-%m-%d");
 
 var color = d3.scale.quantize()
-    .domain([4.50, 6.00])
+    .domain([0, 2000])
     .range(d3.range(11).map(function(d) { return "q" + d + "-11"; }));
 
-var svg = d3.select("#sentiments-calendar").selectAll("svg")
+var svg = d3.select("#statistics-calendar").selectAll("svg")
     .data(d3.range(2012, 2014))
   .enter().append("svg")
     .attr("width", width)
@@ -46,19 +46,19 @@ svg.selectAll(".month")
     .attr("class", "month")
     .attr("d", monthPath);
 
-d3.json("assets/data/sentiment_description.json", function(pjson) {
+d3.json("assets/data/sentiment.json", function(pjson) {
 
-  var dateFormat = d3.time.format('%Y-%m-%d');
+  var dateFormat = d3.time.format('%a, %d %b %Y %H:%M:%S %Z');
   var format = d3.time.format("%Y-%m-%d");
 
   var data = d3.nest()
     .key(function(d) { 
-      var date = dateFormat.parse(d.date); 
+      var date = dateFormat.parse(d.published); 
       return format(date);
     })
     .rollup(function(d) { 
       //return +d[0].sentiments.comments.valence; 
-      return +d[0].valence;
+      return d3.mean(d, function(g) { return +g.votes; });
     })
     .map(pjson);
 

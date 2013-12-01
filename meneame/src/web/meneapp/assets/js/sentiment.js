@@ -11,8 +11,8 @@ d3.json('assets/data/sentiment.json', function(data) {
 		d.dd = dateFormat.parse(d.published);
 		d.month = d3.time.month(d.dd);
 		d.votes = +d.votes;
-		d.arousal = +d.sentiments.comments.arousal;
-		d.valence = +d.sentiments.comments.valence;
+		d.arousal = +d.sentiments.description.arousal;
+		d.valence = +d.sentiments.description.valence;
 	});
 
 	var ndx = crossfilter(data);
