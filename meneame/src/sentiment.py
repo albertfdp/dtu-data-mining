@@ -27,7 +27,13 @@ logging.basicConfig(level=logging.DEBUG,
 
 def main(input_file, dbname):
     """
-        Main function
+        Main function. Connects to a database and reads a\
+        CSV with the arousal and valence. Uses the sentiment \
+        library to compute the sentiment of a new.
+
+          :param input_file: the ANEW file
+          :param dbname: the name of the database
+
     """
 
     # read ANEW file

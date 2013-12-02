@@ -29,7 +29,16 @@ logging.basicConfig(
 
 def download_news(output, start=0, time_range=1, pause=1):
     """
-        Download news
+        Download news from meneame, and store them in the\
+        specified output directory.
+
+            :param output: the output directory
+            :param start: the number of page where to \
+            start at.
+            :param time_range: the time range to scrap.
+            :param pause: the number of seconds to wait\
+            after each request.
+
     """
     output_dir = os.path.join(output, 'raw')
 

@@ -11,9 +11,13 @@ STEMMER = SnowballStemmer('spanish')
 
 def get_sentiment(sentiment_db, txt):
     """
-        Returns a tuple with the valence and arousal strength
-        based on the input text. Returns null in case it cannot
+        Returns a tuple with the valence and arousal strength \
+        based on the input text. Returns null in case it cannot \
         be computed.
+
+            :param sentiment_db: the file ANEW
+            :param txt: the sentence to be analysed.
+
     """
     words = PunktWordTokenizer().tokenize(txt)
     try:
