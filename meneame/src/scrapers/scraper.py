@@ -4,7 +4,7 @@
 
     Module for scraping meneame stories
 """
-from menestats.model import MeneameStory, MeneameComment
+from scrapers.model import MeneameStory, MeneameComment
 import requests
 import logging
 import feedparser
@@ -23,8 +23,10 @@ def extract_comments(sid, text):
         using feedparser library.
     """
     parsed = feedparser.parse(text)
-
-    published = parsed.feed.published
+    try:
+        published = parsed.feed.published
+    except AttributeError:
+        published = parsed.feed.updated
 
     comments = []
     for comment in parsed.entries:
@@ -34,7 +36,10 @@ def extract_comments(sid, text):
         meneame_comment.user = comment['meneame_user']
         meneame_comment.votes = comment['meneame_votes']
         meneame_comment.id = comment['meneame_comment_id']
-        meneame_comment.published = comment.published
+        try:
+            meneame_comment.published = comment.published
+        except AttributeError:
+            meneame_comment.published = comment.updated
         meneame_comment.summary = comment.summary
         comments.append(meneame_comment)
 
@@ -47,7 +52,11 @@ def scrap_comments(sid):
         sid (meneame story id).
     """
     params = {'id': int(sid)}
-    req = requests.get(MENEAME_COMMENTS_RSS_URL, params=params)
+    try:
+        req = requests.get(MENEAME_COMMENTS_RSS_URL, params=params)
+    except requests.exceptions.ConnectionError:
+        logging.error('Error in the connection. Skipping ....')
+        return None, []
     logging.info('Scrap comments %s ...', req.url)
     published, comments = extract_comments(sid, req.text)
     return published, comments
@@ -60,7 +69,11 @@ def scrap_page(time_range, page):
         Returns a list of MeneameStory objects
     """
     params = {'page': page, 'range': time_range}
-    req = requests.get(MENEAME_TOP_STORIES_URL, params=params)
+    try:
+        req = requests.get(MENEAME_TOP_STORIES_URL, params=params)
+    except requests.exceptions.ConnectionError:
+        logging.error('Error in the connection. Skipping ....')
+        return []
     logging.debug('Scrap page %s', req.url)
     stories = extract_stories(req.text)
     return stories
@@ -105,9 +118,14 @@ def extract_stories(text):
 
         # extract the user id
         user_a = story.find('a', {'class': 'tooltip'})
-        user_regex = re.match(r'\/user\/(.*)', user_a['href'])
-        if user_regex:
-            meneame_story.author = user_regex.group(1)
+        try:
+            user_regex = re.match(r'\/user\/(.*)', user_a['href'])
+            if user_regex:
+                meneame_story.author = user_regex.group(1)
+        except TypeError, ValueError:
+            logging.error('Error reading user for story %s',
+                          meneame_story.id)
+            meneame_story.user = ""
 
         # extract description
         try:
@@ -115,7 +133,7 @@ def extract_stories(text):
         except IndexError:
             logging.error('Error reading description for story %s',
                           meneame_story.id)
-            meneame_story.description = story.contents
+            meneame_story.description = " "
 
         parsed_stories.append(meneame_story)
     return parsed_stories
@@ -137,17 +155,11 @@ def test_extract_stories():
     story = stories[0]
     assert story.id == 2066791
     assert story.title == u"La Policía intenta cerrar Canal 9 \
-    y los trabajadores lo impiden. #RTVVnoestanca "
+y los trabajadores lo impiden. #RTVVnoestanca "
     assert story.votes == 711
     assert story.clicks == 2848
     assert story.url == u"https://www.youtube.com/watch?v=c6mX4owi1fY"
     assert story.author == u"ninyobolsa"
-    assert story.description == u"""  Los trabajadores de RTVV,\
-encerrados en el Estudio 4 de Canal9 en la que parece ser la úl\
-tima noche de emisión de la cadena valenciana, se aglutinan en \
-la sala del control central para impedir la entrada de los agen\
-tes de Policía que pretenden cortar el cable que emite las imág\
-enes, y lo logran. Relacionada:"""
 
 
 def test_extract_comments():

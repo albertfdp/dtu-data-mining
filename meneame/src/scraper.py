@@ -3,7 +3,7 @@
 """Meneame scraper
 
 Usage:
-    meneame_scraper.py [options]
+    scraper.py [options]
 
 Options:
     -h, --help      show this screen.
@@ -17,10 +17,15 @@ Options:
 """
 import logging
 import json
-from menestats.scraper import scrap_page, scrap_comments
+from scrapers.scraper import scrap_page, scrap_comments
 from docopt import docopt
 from time import sleep
 import os
+
+# define logging configuration
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s %(levelname)-8s %(message)s')
 
 def download_news(output, start=0, time_range=1, pause=1):
     """
@@ -36,7 +41,9 @@ def download_news(output, start=0, time_range=1, pause=1):
 
     while more_news:
         stories = scrap_page(time_range, current_page)
-        logging.info('Page %s: [%s]', current_page, ",".join([str(story.id) for story in stories]))
+        logging.info('Page %s: [%s]',
+                     current_page,
+                     ",".join([str(story.id) for story in stories]))
         for story in stories:
             filepath = os.path.join(output_dir, '%s.json' % story.id)
             if not os.path.exists(filepath):
@@ -48,8 +55,7 @@ def download_news(output, start=0, time_range=1, pause=1):
                 filename.close()
                 sleep(pause)
             else:
-                logging.warning('File %s already exists...' % story.id)
-
+                logging.warning('File %s already exists...', story.id)
 
         if not stories:
             more_news = False
@@ -60,18 +66,14 @@ def download_news(output, start=0, time_range=1, pause=1):
 if __name__ == '__main__':
     ARGS = docopt(__doc__, version='Meneame Scraper 1.0')
 
-    # define logging configuration
-    logging.basicConfig(
-        level=logging.INFO,
-        format='%(asctime)s %(levelname)-8s %(message)s')
-
     # transform the time range to index
     try:
         TIMERANGE = ['24h', '48h',
                             'week', 'month', 'year',
                             'all'].index(ARGS['--range'])
     except ValueError:
-        logging.error('Error reading time range, not valid. Using default value [24h].')
+        logging.error('Error reading time range, not valid. Using \
+            default value [24h].')
         TIMERANGE = 0
 
     download_news(output=ARGS['-o'],

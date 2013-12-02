@@ -11,7 +11,7 @@ This script aim is two-fold:
 
 Those two operations are necessary for the subsequent analysis.
 """
-from menestats.cleaner import strip_html_tags
+from scraper.cleaner import strip_html_tags
 import couchdb
 import logging
 import sys

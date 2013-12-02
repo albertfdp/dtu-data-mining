@@ -44,8 +44,16 @@ class MeneameComment(object):
     """
         A meneame Meneame comment
     """
-    def __init__(self, story):
+    def __init__(self, story, order=None, karma=None, user=None,
+        votes=None, cid=None, published=None, summary=None):
         self.story = story
+        self.order = order
+        self.karma = karma
+        self.user = user
+        self.votes = votes
+        self.id = cid
+        self.published = published
+        self.summary = summary
 
     def to_dict(self):
         """

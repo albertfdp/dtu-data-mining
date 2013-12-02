@@ -18,7 +18,7 @@ def get_sentiment(sentiment_db, txt):
     words = PunktWordTokenizer().tokenize(txt)
     try:
         sentiments = map(lambda word: sentiment_db.get(
-            stemmer.stem(word), None), words)
+            STEMMER.stem(word), None), words)
         sentiments = filter(None, sentiments)
     except IndexError:
         sentiments = None
