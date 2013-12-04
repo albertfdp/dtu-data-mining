@@ -1,16 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-This script aim is two-fold:
-
-* Update the database with a cleaned version of the content of the
-    articles comments, with all the html tags stripped;
-* Update the database with a dictionary of commenters for each article.
-    In particular, the keys of the dictionary will be commenters, while the
-    values will be the number of comments.
-
-Those two operations are necessary for the subsequent analysis.
+This module contains the necessary functions for cleaning the articles.
 """
+
 from bs4 import BeautifulSoup
 
 
