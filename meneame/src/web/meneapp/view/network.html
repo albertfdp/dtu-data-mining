@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+  <h1>Network Analysis </h1>
+<div class="page-header">
+</div>
+<div class="row">
+
+In this page we will presents the results of the analysis of the networks of meneame users defined as follows:
+
+<ul>
+  <li>Each <b>vertex</b> is a user that has commented in one of the articles we
+    analyzed.<!--Each vertex has an attribute, "comments", that represents
+    the total number of comments an user has posted --> </li>
+  <li>There is an <b>edge</b> between two users if they posted in the same article.
+    Each edge has a weight representing the number of articles in which they
+    posted together</li>
+</ul>
+    
+<p>
+The network analysis provided some interesting results, with the meneame network containing a total of 19823 users and about 9 milions connections between them, included in one single connected component. 
+</p>
+<p>
+We wondered if the famous  <a href="http://en.wikipedia.org/wiki/Six_degrees_of_separation">six degrees of separation theory</a> holds in this network, the idea for which there is a maximum of 6 steps between each person in the world. To do so, we computed the shortest path length between any two users in the network, and we have found a maximum length of only 3, and an average length of 1.98. This confirms the theory and implies all the users in the network very connected. Not surprisingly, we have found also a very high clustering, with an average global clustering coefficient of 0.36. 
+</p>
+<p>
+We have also investigated wether the meneame network can be considered <a href="http://en.wikipedia.org/wiki/Scale-free_network">scale free</a>, in which the degree distribution follows a power law. To do so we plotted its degree distribution, that can be seen in the following figure.
+</p>
+<p align="center">
+<img src="assets/img/network/meneame_degree_distribution.png"/>
+</p>
+<p>  As we can observe, the degree distribution has a peculiar shape, due to the way in which we defined edges. Infact, the minimum observable degree is equal to the minimum number of comments posted in an article, in our case 5. The degree distribution does not strictly follow  a power-law, thus we cannot clearly state whether this can be considered a scale-free network or not. </p>
+<p>
+Another interesting aspect that we have found is the distribution of the weights of the edges, that can be seen in the following figure. In this case the distribution undoubtely follows a power law, with the most edges having a low value of weight, and a few edges having a value higher of 400.
+</p>
+<p align="center">
+<img src="assets/img/network/meneame_weights_distribution.png" />
+</p>
+<p>
+We also tested for communities inside the network using the infomap algorithm <a href="#bib">[1]</a> by Rosvall and Bergstrom that appears to be one of the best performing <a href="#bib">[2]</a>. For the analysis, we used the number of comments of each users, as the vertex weight. Not surprisingly, given the high clustering level, we found only one community. 
+</p>
+
+Due to the high number of edges and vertices it was not possible to visualize the network in a meaningful manner, 
+	<p id="bib">
+	[1] M. Rosvall and C. T. Bergstrom, “Maps of random walks on complex
+networks reveal community structure,” <i>Proc. Natl. Acad. Sci. USA, p.
+1118, 2008</i> <br>
+[2] S. Fortunato and A. Lancichinetti, “Community detection algorithms:
+A comparative analysis: Invited presentation, extended abstract,”
+<i>Proceedings of the Fourth International ICST Conference on
+Performance Evaluation Methodologies and Tools, ser. VALUETOOLS
+’09. ICST, Brussels, Belgium, Belgium: ICST (Institute for Computer
+Sciences, Social-Informatics and Telecommunications Engineering),
+2009, pp. 27:1–27:2. </i>
+	</p>	
+</div>
+
+
+
+
+{% endblock %}
