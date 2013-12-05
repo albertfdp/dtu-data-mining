@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 """
-    scraper.py
-
     Module for scraping meneame stories
 """
 from scrapers.model import Story, Comment
