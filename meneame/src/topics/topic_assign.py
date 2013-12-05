@@ -12,46 +12,54 @@ The final dataset containing everything is saved in a JSON file.
 
 
 import couchdb
-from couchdb.design import ViewDefinition
-
 try:
     import jsonlib2 as json
 except ImportError:
     import json
-
-from collections import defaultdict
 import logging
-import pprint
-
 import pickle
+
+# define logging configuration
+logging.basicConfig(level=logging.DEBUG,
+                    format='%(asctime)s %(levelname)-8s %(message)s')
 
 
 def main():
     """Main function"""
 
     couch = couchdb.Server()
-    topics_db = couch['meneame_topic_test_slices_2']
+    topics_db = couch['meneame_topic_test_slices_3']
     news_db = couch['meneame']
+    logging.info('Loading topic distribution...')
     topic_dist = pickle.load(open("tmp/topic_SLICES_dist_aux.p", "rb"))
 
+    logging.info('Retrieving news from DB...')
     news = {}
     for post in news_db:
-        new_aux = dict(news_db.get(post))
-        new = {}
-        new['description'] = new_aux['description']
-        new['title'] = new_aux['title']
-        
-        news['_id'] = new
+        new = dict(news_db.get(post))
+        news[new['_id']] = {
+            'description': new['description'],
+            'title': new['title'],
+            'votes': new['votes']
+        }
 
+    logging.info('Merging news and topics...')
     for topic in topics_db:
         aux = dict(topics_db.get(topic))
         data = news[aux['article_id']]
 
-        data['topic_id'] =  aux['topic_id']    
-        data'slice_id'] =  aux['slice_id'] 
-        data['slice_date'] =  aux['slice_date']
+        data['topic_id'] = aux['topic_id']
+        data['slice_id'] = aux['slice_id']
+        data['slice_date'] = aux['slice_date']
 
-        news[aux['article_id']] = data    
+        news[aux['article_id']] = data
+
+    logging.info('Generating JSON files...')
+    json.dump(news, open('../web/meneapp/assets/data/topic_news.json', 'w'))
+    json.dump(
+        topic_dist,
+        open('../web/meneapp/assets/data/topic_dist.json', 'w')
+    )
 
 if __name__ == '__main__':
     main()

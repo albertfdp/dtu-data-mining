@@ -12,8 +12,6 @@ After the PoS tagger has been created, it is pickled for subsequent use.
 
 import nltk
 from nltk.corpus import stopwords
-from nltk.corpus import names as nltk_names
-from jose_tokenizer import TreebankWordTokenizer
 from nltk.tokenize import word_tokenize
 import logging
 import pickle
@@ -27,23 +25,32 @@ logging.basicConfig(level=logging.DEBUG,
 def main():
     """ Main function. """
     # Regular expression used as a backoff tagger
-    regexp_ES_tagger = nltk.RegexpTagger(
-    [(r'^-?[0-9]+(.[0-9]+)?$', 'CD'),
-    (r'('+'|'.join(stopwords.words('spanish')) + ')$', 'STOP'),  # stop words
-    (r'(?:www\.|(?!www))[^\s\.]+\.[^\s]{2,}|www\.[^\s]+\.[^\s]{2,}', 'URL'),
-    (r'[0-9]+/[0-9]+/[0-9]+', 'DATE'),
-    (r'([^A-Za-z0-9])+', 'PUNCT'),
-    (r'\xbf', 'Faa'),
-    (r'\xa1', 'Fat'),
-    (r'.*', 'N_N')])  # weird tokens (default)
+    regex = nltk.RegexpTagger
+    (
+        [
+            (r'^-?[0-9]+(.[0-9]+)?$', 'CD'),
+            (
+                r'('+'|'.join(stopwords.words('spanish')) + ')$', 'STOP'
+            ),
+            (
+                r'(?:www\.|(?!www))[^\s\.]+\.[^\s]{2,}|www\.[^\s]+\.[^\s]{2,}',
+                'URL'
+            ),
+            (r'[0-9]+/[0-9]+/[0-9]+', 'DATE'),
+            (r'([^A-Za-z0-9])+', 'PUNCT'),
+            (r'\xbf', 'Faa'),
+            (r'\xa1', 'Fat'),
+            (r'.*', 'N_N')  # weird tokens (default)
+        ]
+    )
 
     # Create training set from the Conll2002 Spanish corpus
     train_set = []
     for text in nltk.corpus.conll2002.tagged_sents('esp.train'):
         train_set.append([(word.lower(), tag) for word, tag in text])
 
-    logging.ingo('Training Unigram Tagger...')
-    unigram_tagger = nltk.UnigramTagger(train_set, backoff=regexp_ES_tagger)
+    logging.info('Training Unigram Tagger...')
+    unigram_tagger = nltk.UnigramTagger(train_set, backoff=regex)
     logging.info('Training Bigram Tagger...')
     tagger_da = nltk.BigramTagger(train_set, backoff=unigram_tagger)
 

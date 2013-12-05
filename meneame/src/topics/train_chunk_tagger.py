@@ -25,6 +25,7 @@ logging.basicConfig(level=logging.CRITICAL,
 
 
 class BigramChunker(nltk.ChunkParserI):
+    """This class defines a bigram chunker"""
     def __init__(self, train_sents):
         """Construct a new BigramChunker instance.
             :param train_sents: Array of sentences with named entities tagged
@@ -50,7 +51,7 @@ class BigramChunker(nltk.ChunkParserI):
 
 
 class ConsecutiveNPChunkTagger(nltk.TaggerI):
-
+    """This class defines a chunker to tag named entities"""
     def __init__(self, train_sents):
         """Construct a new ConsecutiveNPChunkTagger instance.
 
@@ -84,6 +85,8 @@ class ConsecutiveNPChunkTagger(nltk.TaggerI):
 
 
 class ConsecutiveNPChunker(nltk.ChunkParserI):
+    """This class is a wrapper around the tagger class that turns it\
+     into a chunker"""
 
     def __init__(self, train_sents):
         """Construct a new ConsecutiveNPChunker instance.
@@ -136,8 +139,8 @@ def npchunk_features(sentence, i):
 
 
 def tags_since_dt(sentence, i):
-    """Creates a string describing the set of all part-of-speech tags that have\
-    been encountered since the most recent determiner.
+    """Creates a string describing the set of all part-of-speech tags\
+    that have been encountered since the most recent determiner.
 
     :param sentence: Array of word and part of speech tag
     :param i: Index of the actual word
@@ -161,27 +164,37 @@ def test_chunk_tagger():
 
     logging.info('Loading Chunk tagger')
     chunk_tag = pickle.load(open("tmp/chunk_tagger.p", "rb")).parse
-    pos_tag = pickle.load(open("../tmp/POS_tagger.p", "rb")).tag    
-    string = unicode('Izquierda Unida de Santander presentó hoy su 
-                        nuevo boletín trimestral','utf-8')
+    pos_tag = pickle.load(open("../tmp/POS_tagger.p", "rb")).tag
+    string = unicode(
+        """Izquierda Unida de Santander presentó hoy su nuevo boletín\
+trimestral""",
+        'utf-8'
+    )
     tokens = [token.lower() for token in word_tokenize(string)]
     pos_tokens = pos_tag(tokens)
     result = chunk_tag(pos_tokens)
 
-    loc = nltk.Tree('LOC', [(u'santander',u'NC')])
-    org = nltk.Tree('ORG', [(u'izquierda',u'NC')])
-    test = nltk.Tree('S', [org,
-    (u'unida',u'AQ'), 
-    (u'de',u'SP'), 
-    loc,
-    (unicode('presentó','utf-8'),u'VMI'),
-    (u'hoy',u'RG'),
-    (u'su',u'DP'),
-    (u'nuevo','AQ'),
-    (unicode('boletín','utf-8'),u'NC'),
-    (u'trimestral',u'AQ')])
-    
+    loc = nltk.Tree('LOC', [(u'santander', u'NC')])
+    org = nltk.Tree('ORG', [(u'izquierda', u'NC')])
+    test = nltk.Tree
+    (
+        'S',
+        [
+            org,
+            (u'unida', u'AQ'),
+            (u'de', u'SP'),
+            loc,
+            (unicode('presentó', 'utf-8'), u'VMI'),
+            (u'hoy', u'RG'),
+            (u'su', u'DP'),
+            (u'nuevo', 'AQ'),
+            (unicode('boletín', 'utf-8'), u'NC'),
+            (u'trimestral', u'AQ')
+        ]
+    )
+
     assert result == test
+
 
 def main():
     """ Main function. """

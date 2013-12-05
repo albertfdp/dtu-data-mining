@@ -14,43 +14,28 @@ the latent topics.
 
 import sys
 import time
-
-from datetime import date, datetime
 from dateutil import parser
-
 import couchdb
 import networkx as nx
 try:
     import jsonlib2 as json
 except ImportError:
     import json
-
 from collections import defaultdict
-
 import pickle
-
 import nltk
-import string
 from nltk.corpus import stopwords
-from nltk.stem import SnowballStemmer
 from gensim import corpora, models
-import langid
-from nltk.corpus import names as nltk_names
-from meneame_tokenizer import TreebankWordTokenizer
-
+from topics.meneame_tokenizer import TreebankWordTokenizer
 import logging
-import pprint
-
 import numpy as np
-from numpy import zeros, array
-from math import sqrt, log
-
-from train_CHUNK_tagger import ConsecutiveNPChunker, ConsecutiveNPChunkTagger
+from topics.train_chunk_tagger import ConsecutiveNPChunker
+from topics.train_chunk_tagger import ConsecutiveNPChunkTagger
 
 
-define logging configuration
-logging.basicConfig(level=logging.CRITICAL,
-                     format='%(asctime)s %(levelname)-8s %(message)s')
+# define logging configuration
+logging.basicConfig(level=logging.DEBUG,
+                    format='%(asctime)s %(levelname)-8s %(message)s')
 
 
 def tokenize_text(time_slice, sent_tokenizer):
@@ -65,7 +50,7 @@ def tokenize_text(time_slice, sent_tokenizer):
     texts = []
     # Get topics for the previous timeslice
     objects_ids = []
-    for text, id in time_slice:
+    for text, text_id in time_slice:
         words = []
         for sentence in sent_tokenizer.tokenize(text):
             tokens = [
@@ -73,7 +58,7 @@ def tokenize_text(time_slice, sent_tokenizer):
                 for token in TreebankWordTokenizer().tokenize(sentence)
             ]
             words.extend(tokens)
-        objects_ids.append(id)
+        objects_ids.append(text_id)
         texts.append(words)
 
     return texts
@@ -103,8 +88,6 @@ def extract_entities(texts, pos_tagger, chunk_tagger):
 
     nouns = ['NC', 'N_N', 'NP']
     entities = []
-    names = ([(name, 'male') for name in nltk_names.words('male.txt')] +
-             [(name, 'female') for name in nltk_names.words('female.txt')])
     stop_w = stopwords.words('spanish')
 
     for tokens in texts:
@@ -122,11 +105,7 @@ def extract_entities(texts, pos_tagger, chunk_tagger):
                     )
                 )
             else:
-                #continue
                 if len(token[0]) <= 2 or len(token[0]) >= 20:
-                    continue
-                if token[0].lower().strip('.').encode('utf-8') in names:
-                    words.append(j[0])
                     continue
                 if token[1] not in nouns:
                     continue
@@ -140,7 +119,7 @@ def extract_entities(texts, pos_tagger, chunk_tagger):
     return entities
 
 
-def hellinger_distance(p, q):
+def hellinger_distance(prob_a, prob_b):
     """
     Calculates the Hellinger distance between p and q.
 
@@ -149,8 +128,8 @@ def hellinger_distance(p, q):
 
 
     """
-    i = [t[0] for t in sorted(p, key=lambda word: word[1])]
-    j = [t[0] for t in sorted(q, key=lambda word: word[1])]
+    i = [t[0] for t in sorted(prob_a, key=lambda word: word[1])]
+    j = [t[0] for t in sorted(prob_b, key=lambda word: word[1])]
 
     return 1 - np.sqrt(np.sum((np.sqrt(i) - np.sqrt(j)) ** 2)) / np.sqrt(2)
 
@@ -160,14 +139,14 @@ def test_hellinger_distance():
     Test the hellinger_distance function
 
     """
-    p = [(0.25, 'A'), (0.25, 'B'), (0.25, 'C'), (0.25, 'D')]
-    q = [(0.25, 'A'), (0.25, 'B'), (0.25, 'C'), (0.25, 'D')]
-    result = hellinger_distance(p, q)
+    prob_a = [(0.25, 'A'), (0.25, 'B'), (0.25, 'C'), (0.25, 'D')]
+    prob_b = [(0.25, 'A'), (0.25, 'B'), (0.25, 'C'), (0.25, 'D')]
+    result = hellinger_distance(prob_a, prob_b)
     assert result == 1.0
 
-    p = [(0.25, 'A'), (0.25, 'B'), (0.25, 'C'), (0.20, 'D'), (0.05, 'E')]
-    q = [(0.2, 'A'), (0.2, 'B'), (0.2, 'C'), (0.2, 'D'), (0.2, 'E')]
-    result = hellinger_distance(p, q)
+    prob_a = [(0.25, 'A'), (0.25, 'B'), (0.25, 'C'), (0.20, 'D'), (0.05, 'E')]
+    prob_b = [(0.2, 'A'), (0.2, 'B'), (0.2, 'C'), (0.2, 'D'), (0.2, 'E')]
+    result = hellinger_distance(prob_a, prob_b)
     assert result == 0.82917960675006308
 
 
@@ -195,11 +174,9 @@ def merging_topics(topic_dist, topic_list, threshold, sim_metric):
             index_b += 1
         index_a += 1
 
-    topics_grouped = {}
-
     # Check similarity between topics grouping similar topics (score > 0.7)
     # making edges between them in a network
-    G = nx.Graph()
+    graph = nx.Graph()
     for topic_key in topics_score:
         # Order according to max similarity
         score_list = sorted(
@@ -209,11 +186,11 @@ def merging_topics(topic_dist, topic_list, threshold, sim_metric):
         )
         for topic_value in score_list:
             if topic_value.values()[0] > threshold:
-                G.add_edge(topic_value.keys()[0], topic_key)
+                graph.add_edge(topic_value.keys()[0], topic_key)
             else:
-                G.add_edge(topic_key, topic_key)
+                graph.add_edge(topic_key, topic_key)
 
-    components = nx.connected_components(G)
+    components = nx.connected_components(graph)
 
     topic_dict = {}
     topic_ids_in_slice = []
@@ -233,22 +210,22 @@ def merging_topics(topic_dist, topic_list, threshold, sim_metric):
     return (topic_dict, topic_ids_in_slice)
 
 
-def main():
+def get_topics(tagger_es, chunker_es, news_db, window_size=10, num_topics=35):
     """Main function"""
 
     ini = time.time()
     couch = couchdb.Server()
-    news_db = couch['meneame']
+    #news_db = couch['meneame']
     try:
         topic_db = couch.create('meneame_topic_db')
     except:
         topic_db = couch['meneame_topic_db']
 
-    logging.info('Loading Part of Speech tagger')
-    tagger_es = pickle.load(open("tmp/pos_tagger.p", "rb")).tag
+    #logging.info('Loading Part of Speech tagger')
+    #tagger_es = pickle.load(open("tmp/pos_tagger.p", "rb")).tag
 
-    logging.info('Loading Chunk tagger')
-    chunker_es = pickle.load(open("tmp/chunk_tagger.p", "rb")).parse
+    #logging.info('Loading Chunk tagger')
+    #chunker_es = pickle.load(open("tmp/chunk_tagger.p", "rb")).parse
 
     logging.info('Loading Spanish Sent Tokenizer')
     sent_es_token = nltk.data.load('tokenizers/punkt/spanish.pickle')
@@ -271,19 +248,18 @@ def main():
     index = 0
     mssg_id = 0
     len_query = len(ordered_news)
-    num_topics = 35  # Fixed number of topics based on mename categories
     topic_dist = dict()
     time_slices = defaultdict(list)
     topic_slices = {}
-    
+
     logging.info('Creating time slices...')
     for post in ordered_news:
-        # Group articles in a 10-day window
+        # Group articles in a "window_size"-day window
         if index == 0:  # first time
             last_date = post['published']
             index += 1
 
-        if (post['published'] - last_date).days < 10:
+        if (post['published'] - last_date).days < window_size:
             if post['description'] is not None:
                 time_slices[last_date].append(
                     [post['description'], post['_id']]
@@ -351,7 +327,9 @@ def main():
                 # Order topics for each new according to the most
                 # representative, and select it
                 best_topic = sorted(
-                    topic_dist_per_slice[index], key=lambda t: t[1], reverse=True
+                    topic_dist_per_slice[index],
+                    key=lambda t: t[1],
+                    reverse=True
                 )[0]
                 topic_db.save(
                     {
@@ -376,12 +354,7 @@ def main():
             )
             mssg_id += 1
 
-
     pickle.dump(topic_dist, open("tmp/topic_dist.p", "wb"))
     pickle.dump(topic_slices, open("tmp/topic_slices.p", "wb"))
     fin = time.time()
-    print 'Time consumed: %f' % ((float(fin)-float(ini))/60/60)
     logging.info('Time consumed: %f' % ((float(fin)-float(ini))/60/60))
-
-if __name__ == '__main__':
-    main()
