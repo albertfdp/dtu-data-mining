@@ -1,4 +1,4 @@
-DTU COURSE 02819: DATA MINING USING PYTHON
+DTU Course 02819: Data mining using python
 ===============
 
 Analysing a Social News Website: Menéame
