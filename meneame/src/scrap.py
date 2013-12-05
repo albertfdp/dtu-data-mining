@@ -3,7 +3,7 @@
 """Meneame scraper
 
 Usage:
-    scraper.py [options]
+    scrap.py [options]
 
 Options:
     -h, --help      show this screen.
@@ -17,15 +17,21 @@ Options:
 """
 import logging
 import json
-from scrapers.scraper import scrap_page, scrap_comments
+from scrapers.scraper import ScraperFactory
 from docopt import docopt
 from time import sleep
 import os
+
+SCRAPER_TYPE = 'meneame'
+SCRAPER_BASE_URL = 'http://www.meneame.net/'
+SCRAPER_NEWS_URL = 'topstories.php'
+SCRAPER_COMMENTS_URL = 'comments_rss2.php'
 
 # define logging configuration
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s %(levelname)-8s %(message)s')
+
 
 def download_news(output, start=0, time_range=1, pause=1):
     """
@@ -48,8 +54,14 @@ def download_news(output, start=0, time_range=1, pause=1):
     current_page = start  # page counter
     more_news = True
 
+    meneame = ScraperFactory.factory(SCRAPER_TYPE, SCRAPER_BASE_URL,
+                                     SCRAPER_NEWS_URL,
+                                     SCRAPER_COMMENTS_URL)
+
     while more_news:
-        stories = scrap_page(time_range, current_page)
+        stories = meneame.scrap_page(params={
+            'range': time_range,
+            'page': current_page})
         logging.info('Page %s: [%s]',
                      current_page,
                      ",".join([str(story.id) for story in stories]))
@@ -57,7 +69,8 @@ def download_news(output, start=0, time_range=1, pause=1):
             filepath = os.path.join(output_dir, '%s.json' % story.id)
             if not os.path.exists(filepath):
                 logging.debug('Downloading comments for %s', story.id)
-                story.published, story.comments = scrap_comments(story.id)
+                story.comments, story.published = meneame.scrap_comments(
+                    params={'id': story.id})
                 logging.debug('Writing %s ...', filepath)
                 filename = open(filepath, 'w')
                 json.dump(story.to_dict(), filename)

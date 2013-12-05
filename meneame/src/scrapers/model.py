@@ -2,9 +2,9 @@
 """
     Python classes for that model the data used in the scripts.
 """
-class MeneameStory(object):
+class Story(object):
     """
-        A meneame story
+        A story
     """
     def __init__(self, sid=None, votes=None, clicks=None, title=None,
         url=None, author=None, description=None, published=None, comments=None):
@@ -40,9 +40,9 @@ class MeneameStory(object):
         return out
 
 
-class MeneameComment(object):
+class Comment(object):
     """
-        A meneame Meneame comment
+        A comment
     """
     def __init__(self, story, order=None, karma=None, user=None,
         votes=None, cid=None, published=None, summary=None):
