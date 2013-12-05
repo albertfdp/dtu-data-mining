@@ -17,12 +17,7 @@ import time
 from dateutil import parser
 import couchdb
 import networkx as nx
-try:
-    import jsonlib2 as json
-except ImportError:
-    import json
 from collections import defaultdict
-import pickle
 import nltk
 from nltk.corpus import stopwords
 from gensim import corpora, models
@@ -215,17 +210,10 @@ def get_topics(tagger_es, chunker_es, news_db, window_size=10, num_topics=35):
 
     ini = time.time()
     couch = couchdb.Server()
-    #news_db = couch['meneame']
     try:
         topic_db = couch.create('meneame_topic_db')
-    except:
+    except Exception:
         topic_db = couch['meneame_topic_db']
-
-    #logging.info('Loading Part of Speech tagger')
-    #tagger_es = pickle.load(open("tmp/pos_tagger.p", "rb")).tag
-
-    #logging.info('Loading Chunk tagger')
-    #chunker_es = pickle.load(open("tmp/chunk_tagger.p", "rb")).parse
 
     logging.info('Loading Spanish Sent Tokenizer')
     sent_es_token = nltk.data.load('tokenizers/punkt/spanish.pickle')
@@ -243,7 +231,7 @@ def get_topics(tagger_es, chunker_es, news_db, window_size=10, num_topics=35):
         )
 
     # Order news by date
-    ordered_news = sorted(news, key=lambda new: new['published'])
+    ordered_news = sorted(news, key=lambda element: element['published'])
     last_date = ''
     index = 0
     mssg_id = 0
@@ -258,7 +246,8 @@ def get_topics(tagger_es, chunker_es, news_db, window_size=10, num_topics=35):
         if index == 0:  # first time
             last_date = post['published']
             index += 1
-
+        print post['published']
+        print last_date
         if (post['published'] - last_date).days < window_size:
             if post['description'] is not None:
                 time_slices[last_date].append(
@@ -271,10 +260,9 @@ def get_topics(tagger_es, chunker_es, news_db, window_size=10, num_topics=35):
                 mssg_id += 1
         else:
         # New 10-day timeslice
+            print 'do thinnhgs'
             # Creating tokens
-            texts = tokenize_text(
-                time_slices[last_date], sent_es_token
-            )
+            texts = tokenize_text(time_slices[last_date], sent_es_token)
 
             # Extract entities
             entities = extract_entities(texts, tagger_es, chunker_es)
@@ -354,7 +342,5 @@ def get_topics(tagger_es, chunker_es, news_db, window_size=10, num_topics=35):
             )
             mssg_id += 1
 
-    pickle.dump(topic_dist, open("tmp/topic_dist.p", "wb"))
-    pickle.dump(topic_slices, open("tmp/topic_slices.p", "wb"))
     fin = time.time()
     logging.info('Time consumed: %f' % ((float(fin)-float(ini))/60/60))

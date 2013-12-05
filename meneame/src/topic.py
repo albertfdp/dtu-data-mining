@@ -14,10 +14,17 @@ Options:
 """
 
 from topics.topic_analysis import get_topics
+from topics.train_chunk_tagger import ConsecutiveNPChunker
+from topics.train_chunk_tagger import ConsecutiveNPChunkTagger
 import logging
 import couchdb
 from docopt import docopt
 import pickle
+
+
+# define logging configuration
+logging.basicConfig(level=logging.DEBUG,
+                    format='%(asctime)s %(levelname)-8s %(message)s')
 
 
 def main(window, topics, dbname):
@@ -29,6 +36,7 @@ def main(window, topics, dbname):
           :param dbname: the name of the database
 
     """
+
     couch = couchdb.Server()
     database = couch[dbname]
     logging.info('Established connection with the db %s', database)

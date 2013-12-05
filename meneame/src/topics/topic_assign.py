@@ -2,12 +2,9 @@
 # -*- coding: utf-8 -*-
 """
 The aim of the script is to query the news data base in order to merge the\
-news with each of the topics assigned to them
+news with each of the topics assigned to them.
 
-* The following dataset are unpickled:
-    * topics_dist : Dictionary of topic ids and words
-
-The final dataset containing everything is saved in a JSON file.
+The final dataset containing all the information is saved in a JSON file.
 """
 
 
@@ -17,7 +14,6 @@ try:
 except ImportError:
     import json
 import logging
-import pickle
 
 # define logging configuration
 logging.basicConfig(level=logging.DEBUG,
@@ -28,10 +24,9 @@ def main():
     """Main function"""
 
     couch = couchdb.Server()
-    topics_db = couch['meneame_topic_test_slices_3']
+    topics_db = couch['meneame_topic_db']
     news_db = couch['meneame']
     logging.info('Loading topic distribution...')
-    topic_dist = pickle.load(open("tmp/topic_SLICES_dist_aux.p", "rb"))
 
     logging.info('Retrieving news from DB...')
     news = {}
@@ -56,10 +51,7 @@ def main():
 
     logging.info('Generating JSON files...')
     json.dump(news, open('../web/meneapp/assets/data/topic_news.json', 'w'))
-    json.dump(
-        topic_dist,
-        open('../web/meneapp/assets/data/topic_dist.json', 'w')
-    )
+
 
 if __name__ == '__main__':
     main()

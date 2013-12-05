@@ -14,13 +14,13 @@ import nltk
 import logging
 import pickle
 
-MEGAM_FOLDER = 'megam_0.92/megam'
+MEGAM_FOLDER = 'topics/megam_0.92/megam'
 
 nltk.config_megam(MEGAM_FOLDER)
 
 
 # define logging configuration
-logging.basicConfig(level=logging.CRITICAL,
+logging.basicConfig(level=logging.DEBUG,
                     format='%(asctime)s %(levelname)-8s %(message)s')
 
 
