@@ -16,7 +16,10 @@ import pickle
 
 MEGAM_FOLDER = 'topics/megam_0.92/megam'
 
-nltk.config_megam(MEGAM_FOLDER)
+try:
+    nltk.config_megam(MEGAM_FOLDER)
+except LookupError:
+    nltk.config_megam('megam_0.92/megam')
 
 
 # define logging configuration
@@ -157,14 +160,17 @@ def tags_since_dt(sentence, i):
 
 def test_chunk_tagger():
     """
-        Test PoS tagger.
+        Test Chunk tagger.
     """
 
     from nltk.tokenize import word_tokenize
+    from topics.train_chunk_tagger import ConsecutiveNPChunker
+    from topics.train_chunk_tagger import ConsecutiveNPChunkTagger
 
+    logging.info('Loading PoS tagger')
+    pos_tag = pickle.load(open("tmp/pos_tagger.p", "rb")).tag
     logging.info('Loading Chunk tagger')
     chunk_tag = pickle.load(open("tmp/chunk_tagger.p", "rb")).parse
-    pos_tag = pickle.load(open("../tmp/POS_tagger.p", "rb")).tag
     string = unicode(
         """Izquierda Unida de Santander presentó hoy su nuevo boletín\
 trimestral""",

@@ -63,7 +63,7 @@ def test_pos_tagger():
         Test PoS tagger.
     """
 
-    pos_tag = pickle.load(open("../tmp/POS_tagger.p", "rb"))
+    pos_tag = pickle.load(open("topics/tmp/pos_tagger.p", "rb"))
     string = "El presidente del congreso"
     tokens = [token.lower() for token in word_tokenize(string)]
     result = pos_tag.tag(tokens)
