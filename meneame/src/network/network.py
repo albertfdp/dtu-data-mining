@@ -1,14 +1,43 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-The aim of this script is to analyze in various ways the meneame network.
+This module contains the functions the network analysis and creation.
 """
+
 import igraph as ig
 import collections
 import matplotlib.pyplot as plt
 
-IMAGES_FOLDER = "images/"
 
+def create_graph(vertices, edges):
+    """Return the graph object, given the edges and vertices collections.
+
+    :param vertices: collection of vertices, where each element is in the
+        \format "username: number_of_comments"
+    :param edges: collection of edges, where each element is in the format\
+        (username1, username2): weight, where the weight is the number\
+        of articles in which the two users have commented together\
+    :returns: the igraph object
+
+    The creation of the graph is done only on the final step of the
+    function, due to the way igraph deals with the edges.
+    Infact, building first the graph and then the edges would result in a
+    very inefficient code, as the edges are re-indexed every time a new edge
+    is added.
+    """
+    usernames = vertices.keys()
+    comments = vertices.values()
+    users_dic = {name: idx for (idx, name) in enumerate(usernames)}
+    n_users = len(usernames)
+
+    edges_list = [(users_dic[el1],
+                   users_dic[el2]) for (el1, el2) in edges.keys()]
+    weights_list = edges.values()
+
+    vertex_attrs = {'name': usernames, 'comments': comments}
+    edge_attrs = {'weight': weights_list}
+    return ig.Graph(n=n_users, edges=edges_list, vertex_attrs=vertex_attrs,
+                 edge_attrs=edge_attrs)
 
 def remove_weak_users(graph, min_val):
     """Return the filtered graph, considering only the vertices that have a\
@@ -49,11 +78,11 @@ def remove_lonely_nodes(graph):
     return graph.subgraph(vertices_list)
 
 
-def save_degree_distribution(graph):
+def save_degree_distribution(graph, image_folder):
     """Save the degree distribution of the input graph to file.
 
         :param graph: the input igraph object
-
+        :image_folder: the path to the folder where to save the images
     """
     degree_dist = graph.degree_distribution()
     x = [el[0] for el in degree_dist.bins()]
@@ -63,14 +92,14 @@ def save_degree_distribution(graph):
     xlabel = "Degree"
     ylabel = "Number of nodes"
     filename = graph['name'] + "_degree_distribution"
-    save_log_histogram(x, y, title, xlabel, ylabel, filename)
+    save_log_histogram(x, y, title, xlabel, ylabel, filename, image_folder)
 
 
-def save_weights_distribution(graph):
+def save_weights_distribution(graph, image_folder):
     """Saves the weigth distribution to file.
 
         :param graph: the input igraph object
-
+        :image_folder: the path to the folder where to save the images
     """
     weights = graph.es['weight']
 
@@ -82,10 +111,10 @@ def save_weights_distribution(graph):
     xlabel = "Weight"
     ylabel = "Number of edges"
     filename = graph['name'] + "_weights_distribution"
-    save_log_histogram(x, y, title, xlabel, ylabel, filename)
+    save_log_histogram(x, y, title, xlabel, ylabel, filename, image_folder)
 
 
-def save_log_histogram(x, y, title, xlabel, ylabel, filename):
+def save_log_histogram(x, y, title, xlabel, ylabel, filename, image_folder):
     """Create a loglog histogram from the input x and y and saves it to\
     file. Each bin has an unitary size.
 
@@ -105,8 +134,8 @@ def save_log_histogram(x, y, title, xlabel, ylabel, filename):
     plt.ylabel(ylabel)
     plt.xlabel(xlabel)
     plt.title(title)
-    plt.savefig(IMAGES_FOLDER + filename + '.png')
-    plt.savefig(IMAGES_FOLDER + filename + '.pdf')
+    plt.savefig(image_folder + filename + '.png')
+    plt.savefig(image_folder + filename + '.pdf')
 
 
 def community_analysis(graph):
@@ -136,7 +165,7 @@ def single_community_analysis(communities):
     n_comm = len(communities.sizes())
     if n_comm > 1:
         for idx in range(n_comm):
-            print "Community number ", idx, "\n"
+            print "\n COMMUNITY NUMBER ", idx, "\n"
             general_analysis(communities.subgraph(idx))
 
 
@@ -156,7 +185,8 @@ def general_analysis(graph):
 
     print "\nMax. number of comment per user: ", max(comments)
     print "Min. number of comment per user: ", min(comments)
-    print "Average number of comments: ", float(sum(comments)) / len(comments)
+    print "Average number of comments: ",
+    print float(sum(comments)) / len(comments)
 
     print "\nMax. value of weight: ", max(weights)
     print "Min. value of weight: ", min(weights)
@@ -167,21 +197,12 @@ def general_analysis(graph):
     components = graph.components()
     print "\nNumber of connected components: ", len(components.sizes())
 
-    print "\nAverage path length: ", graph.average_path_length()
+    hist = graph.path_length_hist()
+    lengths, paths = [[el[i] for el in list(hist.bins())] for i in [0, 2]]
+    print "\nPath length distibution: "
+    for i in range(len(lengths)):
+        print paths[i], " paths with length ", lengths[i]
 
-
-def main():
-    """Main function"""
-    graph = ig.load("meneame_network.pickle")
-    graph['name'] = 'meneame'
-
-    general_analysis(graph)
-
-    community_analysis(graph)
-
-    save_degree_distribution(graph)
-    save_weights_distribution(graph)
-
-
-if __name__ == '__main__':
-    main()
+    print "\nAverage path length: ",
+    splengths = sum([lengths[i] * paths[i] for i in range(len(lengths))])
+    print splengths / sum(paths)
