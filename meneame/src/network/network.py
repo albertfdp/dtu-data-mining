@@ -9,6 +9,22 @@ import collections
 import matplotlib.pyplot as plt
 
 
+def test_create_graph():
+    vertices = {'user1':12,'user2':8,'user3':7,'user4':4}
+    vertices = collections.Counter(vertices)
+    edges = {('user1','user2'):23,('user1','user3'):12,('user2','user4'):11}
+    edges = collections.Counter(edges)
+    test_graph = create_graph(vertices, edges)
+
+    for v in test_graph.vs:
+        assert v['comments'] == vertices[v['name']]
+
+    for e in test_graph.es:
+        source = test_graph.vs[e.source]['name']
+        target = test_graph.vs[e.target]['name']
+        ed = tuple(sorted((source,target)))
+        assert edges[ed] == e['weight']
+
 def create_graph(vertices, edges):
     """Return the graph object, given the edges and vertices collections.
 
@@ -38,6 +54,7 @@ def create_graph(vertices, edges):
     edge_attrs = {'weight': weights_list}
     return ig.Graph(n=n_users, edges=edges_list, vertex_attrs=vertex_attrs,
                  edge_attrs=edge_attrs)
+
 
 def remove_weak_users(graph, min_val):
     """Return the filtered graph, considering only the vertices that have a\
