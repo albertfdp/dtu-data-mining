@@ -60,45 +60,6 @@ def create_graph(vertices, edges):
                  edge_attrs=edge_attrs)
 
 
-def remove_weak_users(graph, min_val):
-    """Return the filtered graph, considering only the vertices that have a\
-    comments attribute bigger than min_val.
-
-        :param graph: the input igraph object
-        :param min_val: threshold value
-
-    """
-    gs = graph.vs.select(comments_gt=min_val)
-    vertices_list = [el.index for el in gs]
-    return graph.subgraph(vertices_list)
-
-
-def remove_weak_edges(graph, min_val):
-    """Return the filtered graph, considering only the edges that have a\
-    weight attribute bigger than min_val.
-
-        :param graph: the input igraph object
-        :param min_val: threshold value
-
-    """
-    we = graph.es.select(weight_lt=min_val)
-    weak_edges = [el.index for el in we]
-    graph.delete_edges(weak_edges)
-    return graph
-
-
-def remove_lonely_nodes(graph):
-    """Return the filtered graph, considering only the vertices that have\
-    at least one neighbour.
-
-        :param graph: the input igraph object
-
-    """
-    gs = graph.vs.select(_degree_gt=0)
-    vertices_list = [el.index for el in gs]
-    return graph.subgraph(vertices_list)
-
-
 def save_degree_distribution(graph, image_folder):
     """Save the degree distribution of the input graph to file.
 
