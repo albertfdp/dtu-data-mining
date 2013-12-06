@@ -1,0 +1,206 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>topics package &mdash; meneame  documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="meneame  documentation" href="index.html" />
+    <link rel="prev" title="topic_assign module" href="topic_assign.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="topic_assign.html" title="topic_assign module"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">meneame  documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="topics-package">
+<h1>topics package<a class="headerlink" href="#topics-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-topics">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-topics" title="Permalink to this headline">¶</a></h2>
+<p>The aim of this package is to deal with topic analysis of the meneamenews database.</p>
+</div>
+<div class="section" id="module-topics.meneame_tokenizer">
+<span id="topics-meneame-tokenizer-module"></span><h2>topics.meneame_tokenizer module<a class="headerlink" href="#module-topics.meneame_tokenizer" title="Permalink to this headline">¶</a></h2>
+<p>Penn Treebank Tokenizer</p>
+<p>The Treebank tokenizer uses regular expressions to tokenize text as in PennTreebank.
+This implementation is a port of the tokenizer sed script written by RobertMcIntyre
+and available at <a class="reference external" href="http://www.cis.upenn.edu/~treebank/tokenizer.sed">http://www.cis.upenn.edu/~treebank/tokenizer.sed</a>.</p>
+<dl class="class">
+<dt id="topics.meneame_tokenizer.TreebankWordTokenizer">
+<em class="property">class </em><tt class="descclassname">topics.meneame_tokenizer.</tt><tt class="descname">TreebankWordTokenizer</tt><a class="reference internal" href="_modules/topics/meneame_tokenizer.html#TreebankWordTokenizer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#topics.meneame_tokenizer.TreebankWordTokenizer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">nltk.tokenize.api.TokenizerI</span></tt></p>
+<p>The Treebank tokenizer uses regular expressions to tokenize text as in     Penn Treebank.
+This is the method that is invoked by <tt class="docutils literal"><span class="pre">word_tokenize()</span></tt>.  It assumes     that the
+text has already been segmented into sentences, e.g. using     <tt class="docutils literal"><span class="pre">sent_tokenize()</span></tt>.</p>
+<p>This tokenizer performs the following steps:</p>
+<ul>
+<li><p class="first">split standard contractions, e.g. <tt class="docutils literal"><span class="pre">don't</span></tt> -&gt; <tt class="docutils literal"><span class="pre">do</span> <span class="pre">n't</span></tt></p>
+</li>
+<li><p class="first">treat most punctuation characters as separate tokens</p>
+</li>
+<li><p class="first">split off commas and single quotes, when followed by whitespace</p>
+</li>
+<li><p class="first">separate periods that appear at the end of line</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">topics.meneame_tokenizer</span> <span class="kn">import</span> <span class="n">TreebankWordTokenizer</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">s</span> <span class="o">=</span> <span class="s">&#39;&#39;&#39;Good muffins cost $3.88</span><span class="se">\n</span><span class="s">in New York.Please buy me</span><span class="se">\n</span><span class="s">two&#39;&#39;&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">TreebankWordTokenizer</span><span class="p">()</span><span class="o">.</span><span class="n">tokenize</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+<span class="go">[&#39;Good&#39;, &#39;muffins&#39;, &#39;cost&#39;, &#39;$&#39;, &#39;3.88&#39;, &#39;in&#39;, &#39;New&#39;, &#39;York.&#39;, </span>
+<span class="go">&#39;Please&#39;, &#39;buy&#39;, &#39;me&#39;, &#39;two&#39;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">s</span> <span class="o">=</span> <span class="s">&quot;They&#39;ll save and invest more.&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">TreebankWordTokenizer</span><span class="p">()</span><span class="o">.</span><span class="n">tokenize</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+<span class="go">[&#39;They&#39;, &quot;&#39;ll&quot;, &#39;save&#39;, &#39;and&#39;, &#39;invest&#39;, &#39;more&#39;, &#39;.&#39;]</span>
+</pre></div>
+</div>
+</li>
+</ul>
+<dl class="attribute">
+<dt id="topics.meneame_tokenizer.TreebankWordTokenizer.CONTRACTIONS2">
+<tt class="descname">CONTRACTIONS2</tt><em class="property"> = [&lt;_sre.SRE_Pattern object at 0x484f5e0&gt;, &lt;_sre.SRE_Pattern object at 0x49a93f0&gt;, &lt;_sre.SRE_Pattern object at 0x49a0738&gt;, &lt;_sre.SRE_Pattern object at 0x49a0800&gt;, &lt;_sre.SRE_Pattern object at 0x49a08c8&gt;, &lt;_sre.SRE_Pattern object at 0x49a0990&gt;, &lt;_sre.SRE_Pattern object at 0x49a0a58&gt;, &lt;_sre.SRE_Pattern object at 0x49a0b20&gt;]</em><a class="headerlink" href="#topics.meneame_tokenizer.TreebankWordTokenizer.CONTRACTIONS2" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="topics.meneame_tokenizer.TreebankWordTokenizer.CONTRACTIONS3">
+<tt class="descname">CONTRACTIONS3</tt><em class="property"> = [&lt;_sre.SRE_Pattern object at 0x49a94b0&gt;, &lt;_sre.SRE_Pattern object at 0x49a0be8&gt;]</em><a class="headerlink" href="#topics.meneame_tokenizer.TreebankWordTokenizer.CONTRACTIONS3" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="topics.meneame_tokenizer.TreebankWordTokenizer.CONTRACTIONS4">
+<tt class="descname">CONTRACTIONS4</tt><em class="property"> = [&lt;_sre.SRE_Pattern object at 0x4929c60&gt;, &lt;_sre.SRE_Pattern object at 0x48b5eb0&gt;]</em><a class="headerlink" href="#topics.meneame_tokenizer.TreebankWordTokenizer.CONTRACTIONS4" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="topics.meneame_tokenizer.TreebankWordTokenizer.tokenize">
+<tt class="descname">tokenize</tt><big>(</big><em>text</em><big>)</big><a class="reference internal" href="_modules/topics/meneame_tokenizer.html#TreebankWordTokenizer.tokenize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#topics.meneame_tokenizer.TreebankWordTokenizer.tokenize" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="topics-topic-analysis-module">
+<h2>topics.topic_analysis module<a class="headerlink" href="#topics-topic-analysis-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="topics-train-chunk-tagger-module">
+<h2>topics.train_chunk_tagger module<a class="headerlink" href="#topics-train-chunk-tagger-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-topics.train_pos_tagger">
+<span id="topics-train-pos-tagger-module"></span><h2>topics.train_pos_tagger module<a class="headerlink" href="#module-topics.train_pos_tagger" title="Permalink to this headline">¶</a></h2>
+<p>The aim of the script is to train a Part of Speech (PoS) tagger.</p>
+<ul class="simple">
+<li>The train set for the PoS tagger</li>
+<li>For the purpose of the training an external maximun entropy model (megam)    is used.</li>
+</ul>
+<p>After the PoS tagger has been created, it is pickled for subsequent use.</p>
+<dl class="function">
+<dt id="topics.train_pos_tagger.main">
+<tt class="descclassname">topics.train_pos_tagger.</tt><tt class="descname">main</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/topics/train_pos_tagger.html#main"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#topics.train_pos_tagger.main" title="Permalink to this definition">¶</a></dt>
+<dd><p>Main function.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="topics.train_pos_tagger.test_pos_tagger">
+<tt class="descclassname">topics.train_pos_tagger.</tt><tt class="descname">test_pos_tagger</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/topics/train_pos_tagger.html#test_pos_tagger"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#topics.train_pos_tagger.test_pos_tagger" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test PoS tagger.</p>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">topics package</a><ul>
+<li><a class="reference internal" href="#module-topics">Module contents</a></li>
+<li><a class="reference internal" href="#module-topics.meneame_tokenizer">topics.meneame_tokenizer module</a></li>
+<li><a class="reference internal" href="#topics-topic-analysis-module">topics.topic_analysis module</a></li>
+<li><a class="reference internal" href="#topics-train-chunk-tagger-module">topics.train_chunk_tagger module</a></li>
+<li><a class="reference internal" href="#module-topics.train_pos_tagger">topics.train_pos_tagger module</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="topic_assign.html"
+                        title="previous chapter">topic_assign module</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/topics.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="topic_assign.html" title="topic_assign module"
+             >previous</a> |</li>
+        <li><a href="index.html">meneame  documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Ferdinando, Albert, Jose.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b3.
+    </div>
+  </body>
+</html>

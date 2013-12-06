@@ -1,0 +1,282 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>network.network &mdash; meneame  documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="meneame  documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">meneame  documentation</a> &raquo;</li>
+          <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for network.network</h1><div class="highlight"><pre>
+<span class="c">#!/usr/bin/env python</span>
+<span class="c"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">This module contains the functions for the network analysis and creation.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">igraph</span> <span class="kn">as</span> <span class="nn">ig</span>
+<span class="kn">import</span> <span class="nn">collections</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+
+
+<div class="viewcode-block" id="test_create_graph"><a class="viewcode-back" href="../../network.html#network.network.test_create_graph">[docs]</a><span class="k">def</span> <span class="nf">test_create_graph</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;Testing function for create_graph()</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">vertices</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;user1&#39;</span><span class="p">:</span> <span class="mi">12</span><span class="p">,</span> <span class="s">&#39;user2&#39;</span><span class="p">:</span> <span class="mi">8</span><span class="p">,</span> <span class="s">&#39;user3&#39;</span><span class="p">:</span> <span class="mi">7</span><span class="p">,</span> <span class="s">&#39;user4&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">}</span>
+    <span class="n">vertices</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">Counter</span><span class="p">(</span><span class="n">vertices</span><span class="p">)</span>
+    <span class="n">edges</span> <span class="o">=</span> <span class="p">{(</span><span class="s">&#39;user1&#39;</span><span class="p">,</span> <span class="s">&#39;user2&#39;</span><span class="p">):</span> <span class="mi">23</span><span class="p">,</span>
+             <span class="p">(</span><span class="s">&#39;user1&#39;</span><span class="p">,</span> <span class="s">&#39;user3&#39;</span><span class="p">):</span> <span class="mi">12</span><span class="p">,</span> <span class="p">(</span><span class="s">&#39;user2&#39;</span><span class="p">,</span> <span class="s">&#39;user4&#39;</span><span class="p">):</span> <span class="mi">11</span><span class="p">}</span>
+    <span class="n">edges</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">Counter</span><span class="p">(</span><span class="n">edges</span><span class="p">)</span>
+    <span class="n">test_graph</span> <span class="o">=</span> <span class="n">create_graph</span><span class="p">(</span><span class="n">vertices</span><span class="p">,</span> <span class="n">edges</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">test_graph</span><span class="o">.</span><span class="n">vs</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="n">v</span><span class="p">[</span><span class="s">&#39;comments&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">vertices</span><span class="p">[</span><span class="n">v</span><span class="p">[</span><span class="s">&#39;name&#39;</span><span class="p">]]</span>
+
+    <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">test_graph</span><span class="o">.</span><span class="n">es</span><span class="p">:</span>
+        <span class="n">source</span> <span class="o">=</span> <span class="n">test_graph</span><span class="o">.</span><span class="n">vs</span><span class="p">[</span><span class="n">e</span><span class="o">.</span><span class="n">source</span><span class="p">][</span><span class="s">&#39;name&#39;</span><span class="p">]</span>
+        <span class="n">target</span> <span class="o">=</span> <span class="n">test_graph</span><span class="o">.</span><span class="n">vs</span><span class="p">[</span><span class="n">e</span><span class="o">.</span><span class="n">target</span><span class="p">][</span><span class="s">&#39;name&#39;</span><span class="p">]</span>
+        <span class="n">ed</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">sorted</span><span class="p">((</span><span class="n">source</span><span class="p">,</span> <span class="n">target</span><span class="p">)))</span>
+        <span class="k">assert</span> <span class="n">edges</span><span class="p">[</span><span class="n">ed</span><span class="p">]</span> <span class="o">==</span> <span class="n">e</span><span class="p">[</span><span class="s">&#39;weight&#39;</span><span class="p">]</span>
+
+</div>
+<div class="viewcode-block" id="create_graph"><a class="viewcode-back" href="../../network.html#network.network.create_graph">[docs]</a><span class="k">def</span> <span class="nf">create_graph</span><span class="p">(</span><span class="n">vertices</span><span class="p">,</span> <span class="n">edges</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Return the graph object, given the edges and vertices collections.</span>
+
+<span class="sd">    :param vertices: collection of vertices, where each element is in the</span>
+<span class="sd">        \format &quot;username: number_of_comments&quot;</span>
+<span class="sd">    :param edges: collection of edges, where each element is in the format\</span>
+<span class="sd">        (username1, username2): weight, where the weight is the number\</span>
+<span class="sd">        of articles in which the two users have commented together\</span>
+<span class="sd">    :returns: the igraph object</span>
+
+<span class="sd">    The creation of the graph is done only on the final step of the</span>
+<span class="sd">    function, due to the way igraph deals with the edges.</span>
+<span class="sd">    Infact, building first the graph and then the edges would result in a</span>
+<span class="sd">    very inefficient code, as the edges are re-indexed every time a new edge</span>
+<span class="sd">    is added.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">usernames</span> <span class="o">=</span> <span class="n">vertices</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+    <span class="n">comments</span> <span class="o">=</span> <span class="n">vertices</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
+    <span class="n">users_dic</span> <span class="o">=</span> <span class="p">{</span><span class="n">name</span><span class="p">:</span> <span class="n">idx</span> <span class="k">for</span> <span class="p">(</span><span class="n">idx</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">usernames</span><span class="p">)}</span>
+    <span class="n">n_users</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">usernames</span><span class="p">)</span>
+
+    <span class="n">edges_list</span> <span class="o">=</span> <span class="p">[(</span><span class="n">users_dic</span><span class="p">[</span><span class="n">el1</span><span class="p">],</span>
+                   <span class="n">users_dic</span><span class="p">[</span><span class="n">el2</span><span class="p">])</span> <span class="k">for</span> <span class="p">(</span><span class="n">el1</span><span class="p">,</span> <span class="n">el2</span><span class="p">)</span> <span class="ow">in</span> <span class="n">edges</span><span class="o">.</span><span class="n">keys</span><span class="p">()]</span>
+    <span class="n">weights_list</span> <span class="o">=</span> <span class="n">edges</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
+
+    <span class="n">vertex_attrs</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="n">usernames</span><span class="p">,</span> <span class="s">&#39;comments&#39;</span><span class="p">:</span> <span class="n">comments</span><span class="p">}</span>
+    <span class="n">edge_attrs</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;weight&#39;</span><span class="p">:</span> <span class="n">weights_list</span><span class="p">}</span>
+    <span class="k">return</span> <span class="n">ig</span><span class="o">.</span><span class="n">Graph</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="n">n_users</span><span class="p">,</span> <span class="n">edges</span><span class="o">=</span><span class="n">edges_list</span><span class="p">,</span> <span class="n">vertex_attrs</span><span class="o">=</span><span class="n">vertex_attrs</span><span class="p">,</span>
+                 <span class="n">edge_attrs</span><span class="o">=</span><span class="n">edge_attrs</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="save_degree_distribution"><a class="viewcode-back" href="../../network.html#network.network.save_degree_distribution">[docs]</a><span class="k">def</span> <span class="nf">save_degree_distribution</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="n">image_folder</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Save the degree distribution of the input graph to file.</span>
+
+<span class="sd">        :param graph: the input igraph object</span>
+<span class="sd">        :image_folder: the path to the folder where to save the images</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">degree_dist</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">degree_distribution</span><span class="p">()</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="p">[</span><span class="n">el</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">el</span> <span class="ow">in</span> <span class="n">degree_dist</span><span class="o">.</span><span class="n">bins</span><span class="p">()]</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="p">[</span><span class="n">el</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="k">for</span> <span class="n">el</span> <span class="ow">in</span> <span class="n">degree_dist</span><span class="o">.</span><span class="n">bins</span><span class="p">()]</span>
+
+    <span class="n">title</span> <span class="o">=</span> <span class="s">&quot;Network Degree Distribution&quot;</span>
+    <span class="n">xlabel</span> <span class="o">=</span> <span class="s">&quot;Degree&quot;</span>
+    <span class="n">ylabel</span> <span class="o">=</span> <span class="s">&quot;Number of nodes&quot;</span>
+    <span class="n">filename</span> <span class="o">=</span> <span class="n">graph</span><span class="p">[</span><span class="s">&#39;name&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="s">&quot;_degree_distribution&quot;</span>
+    <span class="n">save_log_histogram</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">xlabel</span><span class="p">,</span> <span class="n">ylabel</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">image_folder</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="save_weights_distribution"><a class="viewcode-back" href="../../network.html#network.network.save_weights_distribution">[docs]</a><span class="k">def</span> <span class="nf">save_weights_distribution</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="n">image_folder</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Saves the weigth distribution to file.</span>
+
+<span class="sd">        :param graph: the input igraph object</span>
+<span class="sd">        :image_folder: the path to the folder where to save the images</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">weights</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">es</span><span class="p">[</span><span class="s">&#39;weight&#39;</span><span class="p">]</span>
+
+    <span class="n">co</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">Counter</span><span class="p">(</span><span class="n">weights</span><span class="p">)</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="p">[</span><span class="n">el</span> <span class="k">for</span> <span class="n">el</span> <span class="ow">in</span> <span class="n">co</span><span class="p">]</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="p">[</span><span class="n">co</span><span class="p">[</span><span class="n">el</span><span class="p">]</span> <span class="k">for</span> <span class="n">el</span> <span class="ow">in</span> <span class="n">co</span><span class="p">]</span>
+
+    <span class="n">title</span> <span class="o">=</span> <span class="s">&quot;Weights distribution&quot;</span>
+    <span class="n">xlabel</span> <span class="o">=</span> <span class="s">&quot;Weight&quot;</span>
+    <span class="n">ylabel</span> <span class="o">=</span> <span class="s">&quot;Number of edges&quot;</span>
+    <span class="n">filename</span> <span class="o">=</span> <span class="n">graph</span><span class="p">[</span><span class="s">&#39;name&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="s">&quot;_weights_distribution&quot;</span>
+    <span class="n">save_log_histogram</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">xlabel</span><span class="p">,</span> <span class="n">ylabel</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">image_folder</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="save_log_histogram"><a class="viewcode-back" href="../../network.html#network.network.save_log_histogram">[docs]</a><span class="k">def</span> <span class="nf">save_log_histogram</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">xlabel</span><span class="p">,</span> <span class="n">ylabel</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">image_folder</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Create a loglog histogram from the input x and y and saves it to\</span>
+<span class="sd">    file. Each bin has an unitary size.</span>
+
+<span class="sd">        :param x: bin positions</span>
+<span class="sd">        :param y: count values</span>
+<span class="sd">        :param title: title of the histogram</span>
+<span class="sd">        :param xlabel: label of the x axis</span>
+<span class="sd">        :param ylabel: label of the y axis</span>
+<span class="sd">        :param filename: name of the saved file</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+    <span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xscale</span><span class="p">(</span><span class="s">&#39;log&#39;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_yscale</span><span class="p">(</span><span class="s">&#39;log&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="n">ylabel</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="n">xlabel</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="n">title</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">image_folder</span> <span class="o">+</span> <span class="n">filename</span> <span class="o">+</span> <span class="s">&#39;.png&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">image_folder</span> <span class="o">+</span> <span class="n">filename</span> <span class="o">+</span> <span class="s">&#39;.pdf&#39;</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="community_analysis"><a class="viewcode-back" href="../../network.html#network.network.community_analysis">[docs]</a><span class="k">def</span> <span class="nf">community_analysis</span><span class="p">(</span><span class="n">graph</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Analyze the communities of the input graph.</span>
+
+<span class="sd">        :param graph: the input igraph object</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">print</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">COMMUNITY ANALYSIS</span><span class="se">\n</span><span class="s">&quot;</span>
+
+    <span class="n">communities</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">community_infomap</span><span class="p">(</span><span class="n">edge_weights</span><span class="o">=</span><span class="s">&#39;weight&#39;</span><span class="p">,</span>
+                                          <span class="n">vertex_weights</span><span class="o">=</span><span class="s">&#39;comments&#39;</span><span class="p">,</span>
+                                          <span class="n">trials</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+    <span class="k">print</span> <span class="s">&quot;Infomap  &quot;</span><span class="p">,</span> <span class="n">communities</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span>
+    <span class="k">print</span> <span class="s">&quot;Sizes of communities: &quot;</span><span class="p">,</span> <span class="n">communities</span><span class="o">.</span><span class="n">sizes</span><span class="p">()</span>
+    <span class="n">single_community_analysis</span><span class="p">(</span><span class="n">communities</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="single_community_analysis"><a class="viewcode-back" href="../../network.html#network.network.single_community_analysis">[docs]</a><span class="k">def</span> <span class="nf">single_community_analysis</span><span class="p">(</span><span class="n">communities</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Analyze the communities found. The analysis is done only if more\</span>
+<span class="sd">    than one community has been found.</span>
+
+<span class="sd">        :param graph: the input VertexClustering object representing the\</span>
+<span class="sd">        communities</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">n_comm</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">communities</span><span class="o">.</span><span class="n">sizes</span><span class="p">())</span>
+    <span class="k">if</span> <span class="n">n_comm</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_comm</span><span class="p">):</span>
+            <span class="k">print</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s"> COMMUNITY NUMBER &quot;</span><span class="p">,</span> <span class="n">idx</span><span class="p">,</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="n">general_analysis</span><span class="p">(</span><span class="n">communities</span><span class="o">.</span><span class="n">subgraph</span><span class="p">(</span><span class="n">idx</span><span class="p">))</span>
+
+</div>
+<div class="viewcode-block" id="general_analysis"><a class="viewcode-back" href="../../network.html#network.network.general_analysis">[docs]</a><span class="k">def</span> <span class="nf">general_analysis</span><span class="p">(</span><span class="n">graph</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Print to screen some basic information regarding the input graph.</span>
+
+<span class="sd">        :param graph: the input igraph object</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">comments</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">vs</span><span class="p">[</span><span class="s">&#39;comments&#39;</span><span class="p">]</span>
+    <span class="n">weights</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">es</span><span class="p">[</span><span class="s">&#39;weight&#39;</span><span class="p">]</span>
+
+    <span class="k">print</span> <span class="s">&quot;GENERAL ANALYSIS</span><span class="se">\n</span><span class="s">&quot;</span>
+
+    <span class="k">print</span> <span class="s">&quot;Number of users: &quot;</span><span class="p">,</span> <span class="n">graph</span><span class="o">.</span><span class="n">vcount</span><span class="p">()</span>
+    <span class="k">print</span> <span class="s">&quot;Number of links: &quot;</span><span class="p">,</span> <span class="n">graph</span><span class="o">.</span><span class="n">ecount</span><span class="p">()</span>
+
+    <span class="k">print</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">Max. number of comment per user: &quot;</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="n">comments</span><span class="p">)</span>
+    <span class="k">print</span> <span class="s">&quot;Min. number of comment per user: &quot;</span><span class="p">,</span> <span class="nb">min</span><span class="p">(</span><span class="n">comments</span><span class="p">)</span>
+    <span class="k">print</span> <span class="s">&quot;Average number of comments: &quot;</span><span class="p">,</span>
+    <span class="k">print</span> <span class="nb">float</span><span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="n">comments</span><span class="p">))</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">comments</span><span class="p">)</span>
+
+    <span class="k">print</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">Max. value of weight: &quot;</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="n">weights</span><span class="p">)</span>
+    <span class="k">print</span> <span class="s">&quot;Min. value of weight: &quot;</span><span class="p">,</span> <span class="nb">min</span><span class="p">(</span><span class="n">weights</span><span class="p">)</span>
+    <span class="k">print</span> <span class="s">&quot;Average weight: &quot;</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="n">weights</span><span class="p">))</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">weights</span><span class="p">)</span>
+
+    <span class="k">print</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">Clustering coefficient: &quot;</span><span class="p">,</span> <span class="n">graph</span><span class="o">.</span><span class="n">transitivity_undirected</span><span class="p">()</span>
+
+    <span class="n">components</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">components</span><span class="p">()</span>
+    <span class="k">print</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">Number of connected components: &quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">components</span><span class="o">.</span><span class="n">sizes</span><span class="p">())</span>
+
+    <span class="n">hist</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">path_length_hist</span><span class="p">()</span>
+    <span class="n">lengths</span><span class="p">,</span> <span class="n">paths</span> <span class="o">=</span> <span class="p">[[</span><span class="n">el</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">el</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">hist</span><span class="o">.</span><span class="n">bins</span><span class="p">())]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">]]</span>
+    <span class="k">print</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">Path length distibution: &quot;</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">lengths</span><span class="p">)):</span>
+        <span class="k">print</span> <span class="n">paths</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="s">&quot; paths with length &quot;</span><span class="p">,</span> <span class="n">lengths</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+
+    <span class="k">print</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">Average path length: &quot;</span><span class="p">,</span>
+    <span class="n">splengths</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">([</span><span class="n">lengths</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">paths</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">lengths</span><span class="p">))])</span>
+    <span class="k">print</span> <span class="n">splengths</span> <span class="o">/</span> <span class="nb">sum</span><span class="p">(</span><span class="n">paths</span><span class="p">)</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">meneame  documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Ferdinando, Albert, Jose.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b3.
+    </div>
+  </body>
+</html>

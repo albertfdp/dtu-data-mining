@@ -1,0 +1,160 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>sentiments package &mdash; meneame  documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="meneame  documentation" href="index.html" />
+    <link rel="next" title="to_database module" href="to_database.html" />
+    <link rel="prev" title="sentiment module" href="sentiment.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="to_database.html" title="to_database module"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="sentiment.html" title="sentiment module"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">meneame  documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="sentiments-package">
+<h1>sentiments package<a class="headerlink" href="#sentiments-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-sentiments">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-sentiments" title="Permalink to this headline">¶</a></h2>
+<p>The sentiment analysis module</p>
+<p>Provides the required methods and tools to perform      sentiment analysis to texts.</p>
+</div>
+<div class="section" id="module-sentiments.sentiments">
+<span id="sentiments-sentiments-module"></span><h2>sentiments.sentiments module<a class="headerlink" href="#module-sentiments.sentiments" title="Permalink to this headline">¶</a></h2>
+<p>Module that computes the sentiment for a given text and a given
+map with word =&gt; (valence, arousal)</p>
+<dl class="function">
+<dt id="sentiments.sentiments.get_sentiment">
+<tt class="descclassname">sentiments.sentiments.</tt><tt class="descname">get_sentiment</tt><big>(</big><em>sentiment_db</em>, <em>txt</em><big>)</big><a class="reference internal" href="_modules/sentiments/sentiments.html#get_sentiment"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sentiments.sentiments.get_sentiment" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a tuple with the valence and arousal strength         based on the input text. Returns null in case it cannot         be computed.</p>
+<blockquote>
+<div><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name" colspan="2">param sentiment_db:</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body">the file ANEW</td>
+</tr>
+<tr class="field-even field"><th class="field-name">param txt:</th><td class="field-body">the sentence to be analysed.</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+</dd></dl>
+
+<dl class="function">
+<dt id="sentiments.sentiments.test_get_sentiments">
+<tt class="descclassname">sentiments.sentiments.</tt><tt class="descname">test_get_sentiments</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/sentiments/sentiments.html#test_get_sentiments"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sentiments.sentiments.test_get_sentiments" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test get_sentiment function.</p>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">sentiments package</a><ul>
+<li><a class="reference internal" href="#module-sentiments">Module contents</a></li>
+<li><a class="reference internal" href="#module-sentiments.sentiments">sentiments.sentiments module</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="sentiment.html"
+                        title="previous chapter">sentiment module</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="to_database.html"
+                        title="next chapter">to_database module</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/sentiments.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="to_database.html" title="to_database module"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="sentiment.html" title="sentiment module"
+             >previous</a> |</li>
+        <li><a href="index.html">meneame  documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Ferdinando, Albert, Jose.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b3.
+    </div>
+  </body>
+</html>

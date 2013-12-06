@@ -1,0 +1,180 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>sentiment &mdash; meneame  documentation</title>
+    
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="meneame  documentation" href="../index.html" />
+    <link rel="up" title="Module code" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../index.html">meneame  documentation</a> &raquo;</li>
+          <li><a href="index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for sentiment</h1><div class="highlight"><pre>
+<span class="c">#!/usr/bin/env python</span>
+<span class="c"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;Meneame sentiments</span>
+
+<span class="sd">Usage:</span>
+<span class="sd">    sentiment.py [--input FILE] [--database DB]</span>
+
+<span class="sd">Options:</span>
+<span class="sd">    -h, --help      show this screen.</span>
+<span class="sd">    --version       show version.</span>
+<span class="sd">    --database DB   database where the text is stored [default: meneame].</span>
+<span class="sd">    --input ANEW    input ANEW file</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">csv</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">couchdb</span>
+<span class="kn">from</span> <span class="nn">nltk.stem</span> <span class="kn">import</span> <span class="n">SnowballStemmer</span>
+<span class="kn">from</span> <span class="nn">sentiments.sentiments</span> <span class="kn">import</span> <span class="n">get_sentiment</span>
+<span class="kn">from</span> <span class="nn">docopt</span> <span class="kn">import</span> <span class="n">docopt</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+
+<span class="c"># define logging configuration</span>
+<span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">,</span>
+                    <span class="n">format</span><span class="o">=</span><span class="s">&#39;</span><span class="si">%(asctime)s</span><span class="s"> </span><span class="si">%(levelname)-8s</span><span class="s"> </span><span class="si">%(message)s</span><span class="s">&#39;</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="main"><a class="viewcode-back" href="../sentiment.html#sentiment.main">[docs]</a><span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">input_file</span><span class="p">,</span> <span class="n">dbname</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Main function. Connects to a database and reads a\</span>
+<span class="sd">        CSV with the arousal and valence. Uses the sentiment \</span>
+<span class="sd">        library to compute the sentiment of a new.</span>
+
+<span class="sd">          :param input_file: the ANEW file</span>
+<span class="sd">          :param dbname: the name of the database</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c"># read ANEW file</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">input_file</span><span class="p">):</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&#39;File </span><span class="si">%s</span><span class="s"> does not exist&#39;</span><span class="p">,</span> <span class="n">input_file</span><span class="p">)</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">csvfile</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">input_file</span><span class="p">,</span> <span class="s">&#39;r&#39;</span><span class="p">)</span>
+        <span class="n">reader</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">reader</span><span class="p">(</span><span class="n">csvfile</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="s">&#39;,&#39;</span><span class="p">)</span>
+        <span class="n">reader</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>  <span class="c"># skip headers</span>
+        <span class="n">stemmer</span> <span class="o">=</span> <span class="n">SnowballStemmer</span><span class="p">(</span><span class="s">&#39;spanish&#39;</span><span class="p">)</span>
+        <span class="n">anew</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">([(</span><span class="n">stemmer</span><span class="o">.</span><span class="n">stem</span><span class="p">(</span><span class="nb">unicode</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="s">&#39;utf-8&#39;</span><span class="p">)),</span>
+                      <span class="p">{</span><span class="s">&#39;valence&#39;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">3</span><span class="p">]),</span>
+                       <span class="s">&#39;arousal&#39;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">5</span><span class="p">])})</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">reader</span><span class="p">])</span>
+
+    <span class="n">couch</span> <span class="o">=</span> <span class="n">couchdb</span><span class="o">.</span><span class="n">Server</span><span class="p">()</span>
+    <span class="n">database</span> <span class="o">=</span> <span class="n">couch</span><span class="p">[</span><span class="n">dbname</span><span class="p">]</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&#39;Established connection with the db </span><span class="si">%s</span><span class="s">&#39;</span><span class="p">,</span> <span class="n">dbname</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="n">database</span><span class="p">:</span>
+        <span class="n">doc</span> <span class="o">=</span> <span class="n">database</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">element</span><span class="p">)</span>
+
+        <span class="n">comments</span> <span class="o">=</span> <span class="s">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">comment</span><span class="p">[</span><span class="s">&#39;cleaned_summary&#39;</span><span class="p">]</span>
+                            <span class="k">for</span> <span class="n">comment</span> <span class="ow">in</span> <span class="n">doc</span><span class="p">[</span><span class="s">&#39;comments&#39;</span><span class="p">]])</span>
+        <span class="n">description</span> <span class="o">=</span> <span class="s">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">database</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">element</span><span class="p">)[</span><span class="s">&#39;title&#39;</span><span class="p">],</span>
+                                <span class="n">doc</span><span class="p">[</span><span class="s">&#39;description&#39;</span><span class="p">]])</span>
+
+        <span class="n">sentiment_comments</span> <span class="o">=</span> <span class="n">get_sentiment</span><span class="p">(</span><span class="n">anew</span><span class="p">,</span> <span class="n">comments</span><span class="p">)</span>
+        <span class="n">sentiment_description</span> <span class="o">=</span> <span class="n">get_sentiment</span><span class="p">(</span><span class="n">anew</span><span class="p">,</span> <span class="n">description</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">sentiment_comments</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">sentiment_description</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%s</span><span class="s"> val: </span><span class="si">%.2f</span><span class="s"> - </span><span class="si">%.2f</span><span class="s"> aro: </span><span class="si">%.2f</span><span class="s"> - </span><span class="si">%.2f</span><span class="s"> : </span><span class="si">%s</span><span class="s">&#39;</span><span class="p">,</span>
+                         <span class="n">doc</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">sentiment_comments</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                         <span class="n">sentiment_description</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                         <span class="n">sentiment_comments</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                         <span class="n">sentiment_description</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                         <span class="n">doc</span><span class="p">[</span><span class="s">&#39;title&#39;</span><span class="p">])</span>
+            <span class="n">doc</span><span class="p">[</span><span class="s">&#39;sentiments&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;comments&#39;</span><span class="p">:</span>
+                                <span class="p">{</span><span class="s">&#39;valence&#39;</span><span class="p">:</span> <span class="n">sentiment_comments</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                                 <span class="s">&#39;arousal&#39;</span><span class="p">:</span> <span class="n">sentiment_comments</span><span class="p">[</span><span class="mi">1</span><span class="p">]},</span>
+                                 <span class="s">&#39;description&#39;</span><span class="p">:</span>
+                                <span class="p">{</span><span class="s">&#39;valence&#39;</span><span class="p">:</span> <span class="n">sentiment_description</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                                 <span class="s">&#39;arousal&#39;</span><span class="p">:</span> <span class="n">sentiment_description</span><span class="p">[</span><span class="mi">1</span><span class="p">]}}</span>
+            <span class="n">database</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%s</span><span class="s"> could not be analyzed. skiping ...&#39;</span><span class="p">,</span>
+                         <span class="n">database</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">element</span><span class="p">)[</span><span class="s">&#39;title&#39;</span><span class="p">])</span>
+</div>
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">ARGS</span> <span class="o">=</span> <span class="n">docopt</span><span class="p">(</span><span class="n">__doc__</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="s">&#39;Meneame Scraper 1.0&#39;</span><span class="p">)</span>
+    <span class="n">main</span><span class="p">(</span><span class="n">ARGS</span><span class="p">[</span><span class="s">&#39;--input&#39;</span><span class="p">],</span> <span class="n">ARGS</span><span class="p">[</span><span class="s">&#39;--database&#39;</span><span class="p">])</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../index.html">meneame  documentation</a> &raquo;</li>
+          <li><a href="index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Ferdinando, Albert, Jose.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b3.
+    </div>
+  </body>
+</html>

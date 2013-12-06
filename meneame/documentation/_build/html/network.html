@@ -1,0 +1,268 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>network package &mdash; meneame  documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="meneame  documentation" href="index.html" />
+    <link rel="next" title="network_analysis module" href="network_analysis.html" />
+    <link rel="prev" title="extract_data module" href="extract_data.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="network_analysis.html" title="network_analysis module"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="extract_data.html" title="extract_data module"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">meneame  documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="network-package">
+<h1>network package<a class="headerlink" href="#network-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-network">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-network" title="Permalink to this headline">¶</a></h2>
+<p>The aim of this package is to deal with network creation and analysis of the meneame network.</p>
+</div>
+<div class="section" id="module-network.network">
+<span id="network-network-module"></span><h2>network.network module<a class="headerlink" href="#module-network.network" title="Permalink to this headline">¶</a></h2>
+<p>This module contains the functions for the network analysis and creation.</p>
+<dl class="function">
+<dt id="network.network.community_analysis">
+<tt class="descclassname">network.network.</tt><tt class="descname">community_analysis</tt><big>(</big><em>graph</em><big>)</big><a class="reference internal" href="_modules/network/network.html#community_analysis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#network.network.community_analysis" title="Permalink to this definition">¶</a></dt>
+<dd><p>Analyze the communities of the input graph.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>graph</strong> &#8211; the input igraph object</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="network.network.create_graph">
+<tt class="descclassname">network.network.</tt><tt class="descname">create_graph</tt><big>(</big><em>vertices</em>, <em>edges</em><big>)</big><a class="reference internal" href="_modules/network/network.html#create_graph"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#network.network.create_graph" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the graph object, given the edges and vertices collections.</p>
+<blockquote>
+<div><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">param vertices:</th><td class="field-body">collection of vertices, where each element is in the</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<dl class="docutils">
+<dt>ormat &#8220;username: number_of_comments&#8221;</dt>
+<dd><table class="first docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">param edges:</th><td class="field-body">collection of edges, where each element is in the format        (username1, username2): weight, where the weight is the number        of articles in which the two users have commented together    :returns: the igraph object</td>
+</tr>
+</tbody>
+</table>
+<p class="last">The creation of the graph is done only on the final step of the
+function, due to the way igraph deals with the edges.
+Infact, building first the graph and then the edges would result in a
+very inefficient code, as the edges are re-indexed every time a new edge
+is added.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="network.network.general_analysis">
+<tt class="descclassname">network.network.</tt><tt class="descname">general_analysis</tt><big>(</big><em>graph</em><big>)</big><a class="reference internal" href="_modules/network/network.html#general_analysis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#network.network.general_analysis" title="Permalink to this definition">¶</a></dt>
+<dd><p>Print to screen some basic information regarding the input graph.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>graph</strong> &#8211; the input igraph object</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="network.network.save_degree_distribution">
+<tt class="descclassname">network.network.</tt><tt class="descname">save_degree_distribution</tt><big>(</big><em>graph</em>, <em>image_folder</em><big>)</big><a class="reference internal" href="_modules/network/network.html#save_degree_distribution"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#network.network.save_degree_distribution" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save the degree distribution of the input graph to file.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>graph</strong> &#8211; the input igraph object</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Image_folder:</th><td class="field-body">the path to the folder where to save the images</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="network.network.save_log_histogram">
+<tt class="descclassname">network.network.</tt><tt class="descname">save_log_histogram</tt><big>(</big><em>x</em>, <em>y</em>, <em>title</em>, <em>xlabel</em>, <em>ylabel</em>, <em>filename</em>, <em>image_folder</em><big>)</big><a class="reference internal" href="_modules/network/network.html#save_log_histogram"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#network.network.save_log_histogram" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a loglog histogram from the input x and y and saves it to    file. Each bin has an unitary size.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>x</strong> &#8211; bin positions</li>
+<li><strong>y</strong> &#8211; count values</li>
+<li><strong>title</strong> &#8211; title of the histogram</li>
+<li><strong>xlabel</strong> &#8211; label of the x axis</li>
+<li><strong>ylabel</strong> &#8211; label of the y axis</li>
+<li><strong>filename</strong> &#8211; name of the saved file</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="network.network.save_weights_distribution">
+<tt class="descclassname">network.network.</tt><tt class="descname">save_weights_distribution</tt><big>(</big><em>graph</em>, <em>image_folder</em><big>)</big><a class="reference internal" href="_modules/network/network.html#save_weights_distribution"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#network.network.save_weights_distribution" title="Permalink to this definition">¶</a></dt>
+<dd><p>Saves the weigth distribution to file.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>graph</strong> &#8211; the input igraph object</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Image_folder:</th><td class="field-body">the path to the folder where to save the images</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="network.network.single_community_analysis">
+<tt class="descclassname">network.network.</tt><tt class="descname">single_community_analysis</tt><big>(</big><em>communities</em><big>)</big><a class="reference internal" href="_modules/network/network.html#single_community_analysis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#network.network.single_community_analysis" title="Permalink to this definition">¶</a></dt>
+<dd><p>Analyze the communities found. The analysis is done only if more    than one community has been found.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>graph</strong> &#8211; the input VertexClustering object representing the        communities</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="network.network.test_create_graph">
+<tt class="descclassname">network.network.</tt><tt class="descname">test_create_graph</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/network/network.html#test_create_graph"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#network.network.test_create_graph" title="Permalink to this definition">¶</a></dt>
+<dd><p>Testing function for create_graph()</p>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">network package</a><ul>
+<li><a class="reference internal" href="#module-network">Module contents</a></li>
+<li><a class="reference internal" href="#module-network.network">network.network module</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="extract_data.html"
+                        title="previous chapter">extract_data module</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="network_analysis.html"
+                        title="next chapter">network_analysis module</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/network.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="network_analysis.html" title="network_analysis module"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="extract_data.html" title="extract_data module"
+             >previous</a> |</li>
+        <li><a href="index.html">meneame  documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Ferdinando, Albert, Jose.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b3.
+    </div>
+  </body>
+</html>

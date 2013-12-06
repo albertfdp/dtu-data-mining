@@ -1,0 +1,168 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>topics.train_pos_tagger &mdash; meneame  documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="meneame  documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">meneame  documentation</a> &raquo;</li>
+          <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for topics.train_pos_tagger</h1><div class="highlight"><pre>
+<span class="c">#!/usr/bin/env python</span>
+<span class="c"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">The aim of the script is to train a Part of Speech (PoS) tagger.</span>
+
+<span class="sd">* The train set for the PoS tagger</span>
+<span class="sd">* For the purpose of the training an external maximun entropy model (megam)\</span>
+<span class="sd">    is used.</span>
+
+<span class="sd">After the PoS tagger has been created, it is pickled for subsequent use.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">nltk</span>
+<span class="kn">from</span> <span class="nn">nltk.corpus</span> <span class="kn">import</span> <span class="n">stopwords</span>
+<span class="kn">from</span> <span class="nn">nltk.tokenize</span> <span class="kn">import</span> <span class="n">word_tokenize</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">pickle</span>
+
+
+<span class="c"># define logging configuration</span>
+<span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">,</span>
+                    <span class="n">format</span><span class="o">=</span><span class="s">&#39;</span><span class="si">%(asctime)s</span><span class="s"> </span><span class="si">%(levelname)-8s</span><span class="s"> </span><span class="si">%(message)s</span><span class="s">&#39;</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="main"><a class="viewcode-back" href="../../topics.html#topics.train_pos_tagger.main">[docs]</a><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot; Main function. &quot;&quot;&quot;</span>
+    <span class="c"># Regular expression used as a backoff tagger</span>
+    <span class="n">regex</span> <span class="o">=</span> <span class="n">nltk</span><span class="o">.</span><span class="n">RegexpTagger</span>
+    <span class="p">(</span>
+        <span class="p">[</span>
+            <span class="p">(</span><span class="s">r&#39;^-?[0-9]+(.[0-9]+)?$&#39;</span><span class="p">,</span> <span class="s">&#39;CD&#39;</span><span class="p">),</span>
+            <span class="p">(</span>
+                <span class="s">r&#39;(&#39;</span><span class="o">+</span><span class="s">&#39;|&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">stopwords</span><span class="o">.</span><span class="n">words</span><span class="p">(</span><span class="s">&#39;spanish&#39;</span><span class="p">))</span> <span class="o">+</span> <span class="s">&#39;)$&#39;</span><span class="p">,</span> <span class="s">&#39;STOP&#39;</span>
+            <span class="p">),</span>
+            <span class="p">(</span>
+                <span class="s">r&#39;(?:www\.|(?!www))[^\s\.]+\.[^\s]{2,}|www\.[^\s]+\.[^\s]{2,}&#39;</span><span class="p">,</span>
+                <span class="s">&#39;URL&#39;</span>
+            <span class="p">),</span>
+            <span class="p">(</span><span class="s">r&#39;[0-9]+/[0-9]+/[0-9]+&#39;</span><span class="p">,</span> <span class="s">&#39;DATE&#39;</span><span class="p">),</span>
+            <span class="p">(</span><span class="s">r&#39;([^A-Za-z0-9])+&#39;</span><span class="p">,</span> <span class="s">&#39;PUNCT&#39;</span><span class="p">),</span>
+            <span class="p">(</span><span class="s">r&#39;\xbf&#39;</span><span class="p">,</span> <span class="s">&#39;Faa&#39;</span><span class="p">),</span>
+            <span class="p">(</span><span class="s">r&#39;\xa1&#39;</span><span class="p">,</span> <span class="s">&#39;Fat&#39;</span><span class="p">),</span>
+            <span class="p">(</span><span class="s">r&#39;.*&#39;</span><span class="p">,</span> <span class="s">&#39;N_N&#39;</span><span class="p">)</span>  <span class="c"># weird tokens (default)</span>
+        <span class="p">]</span>
+    <span class="p">)</span>
+
+    <span class="c"># Create training set from the Conll2002 Spanish corpus</span>
+    <span class="n">train_set</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">text</span> <span class="ow">in</span> <span class="n">nltk</span><span class="o">.</span><span class="n">corpus</span><span class="o">.</span><span class="n">conll2002</span><span class="o">.</span><span class="n">tagged_sents</span><span class="p">(</span><span class="s">&#39;esp.train&#39;</span><span class="p">):</span>
+        <span class="n">train_set</span><span class="o">.</span><span class="n">append</span><span class="p">([(</span><span class="n">word</span><span class="o">.</span><span class="n">lower</span><span class="p">(),</span> <span class="n">tag</span><span class="p">)</span> <span class="k">for</span> <span class="n">word</span><span class="p">,</span> <span class="n">tag</span> <span class="ow">in</span> <span class="n">text</span><span class="p">])</span>
+
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&#39;Training Unigram Tagger...&#39;</span><span class="p">)</span>
+    <span class="n">unigram_tagger</span> <span class="o">=</span> <span class="n">nltk</span><span class="o">.</span><span class="n">UnigramTagger</span><span class="p">(</span><span class="n">train_set</span><span class="p">,</span> <span class="n">backoff</span><span class="o">=</span><span class="n">regex</span><span class="p">)</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&#39;Training Bigram Tagger...&#39;</span><span class="p">)</span>
+    <span class="n">tagger_da</span> <span class="o">=</span> <span class="n">nltk</span><span class="o">.</span><span class="n">BigramTagger</span><span class="p">(</span><span class="n">train_set</span><span class="p">,</span> <span class="n">backoff</span><span class="o">=</span><span class="n">unigram_tagger</span><span class="p">)</span>
+
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&#39;Pickling Part of Speech Tagger...&#39;</span><span class="p">)</span>
+    <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">tagger_da</span><span class="p">,</span> <span class="nb">open</span><span class="p">(</span><span class="s">&quot;tmp/pos_tagger.p&quot;</span><span class="p">,</span> <span class="s">&quot;wb&quot;</span><span class="p">))</span>
+
+</div>
+<div class="viewcode-block" id="test_pos_tagger"><a class="viewcode-back" href="../../topics.html#topics.train_pos_tagger.test_pos_tagger">[docs]</a><span class="k">def</span> <span class="nf">test_pos_tagger</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Test PoS tagger.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">pos_tag</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="s">&quot;topics/tmp/pos_tagger.p&quot;</span><span class="p">,</span> <span class="s">&quot;rb&quot;</span><span class="p">))</span>
+    <span class="n">string</span> <span class="o">=</span> <span class="s">&quot;El presidente del congreso&quot;</span>
+    <span class="n">tokens</span> <span class="o">=</span> <span class="p">[</span><span class="n">token</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="k">for</span> <span class="n">token</span> <span class="ow">in</span> <span class="n">word_tokenize</span><span class="p">(</span><span class="n">string</span><span class="p">)]</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">pos_tag</span><span class="o">.</span><span class="n">tag</span><span class="p">(</span><span class="n">tokens</span><span class="p">)</span>
+
+    <span class="k">assert</span> <span class="n">result</span> <span class="o">==</span> <span class="p">[(</span><span class="s">&#39;el&#39;</span><span class="p">,</span> <span class="s">&#39;DA&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s">&quot;presidente&quot;</span><span class="p">,</span> <span class="s">&#39;NC&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s">&#39;del&#39;</span><span class="p">,</span> <span class="s">&#39;SP&#39;</span><span class="p">),</span>
+                      <span class="p">(</span><span class="s">&#39;congreso&#39;</span><span class="p">,</span> <span class="s">&#39;NC&#39;</span><span class="p">)]</span>
+
+</div>
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">main</span><span class="p">()</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">meneame  documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Ferdinando, Albert, Jose.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b3.
+    </div>
+  </body>
+</html>

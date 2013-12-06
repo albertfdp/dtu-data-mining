@@ -1,0 +1,196 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>scrap &mdash; meneame  documentation</title>
+    
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="meneame  documentation" href="../index.html" />
+    <link rel="up" title="Module code" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../index.html">meneame  documentation</a> &raquo;</li>
+          <li><a href="index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for scrap</h1><div class="highlight"><pre>
+<span class="c">#!/usr/bin/env python</span>
+<span class="c"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;Meneame scraper</span>
+
+<span class="sd">Usage:</span>
+<span class="sd">    scrap.py [options]</span>
+
+<span class="sd">Options:</span>
+<span class="sd">    -h, --help      show this screen.</span>
+<span class="sd">    --version       show version.</span>
+<span class="sd">    -o DIRECTORY    output directory [default: meneame].</span>
+<span class="sd">    --start START   specify start page [default: 0].</span>
+<span class="sd">    --timeout TIME  specify timeout after each request [default: 0].</span>
+<span class="sd">    --range RANGE   specify the range. valid options\</span>
+<span class="sd"> (24h | 48h | week | month | year | all) [default: 24h].</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">from</span> <span class="nn">scraper.scraper</span> <span class="kn">import</span> <span class="n">ScraperFactory</span>
+<span class="kn">from</span> <span class="nn">docopt</span> <span class="kn">import</span> <span class="n">docopt</span>
+<span class="kn">from</span> <span class="nn">time</span> <span class="kn">import</span> <span class="n">sleep</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+<span class="n">SCRAPER_TYPE</span> <span class="o">=</span> <span class="s">&#39;meneame&#39;</span>
+<span class="n">SCRAPER_BASE_URL</span> <span class="o">=</span> <span class="s">&#39;http://www.meneame.net/&#39;</span>
+<span class="n">SCRAPER_NEWS_URL</span> <span class="o">=</span> <span class="s">&#39;topstories.php&#39;</span>
+<span class="n">SCRAPER_COMMENTS_URL</span> <span class="o">=</span> <span class="s">&#39;comments_rss2.php&#39;</span>
+
+<span class="c"># define logging configuration</span>
+<span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span>
+    <span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">,</span>
+    <span class="n">format</span><span class="o">=</span><span class="s">&#39;</span><span class="si">%(asctime)s</span><span class="s"> </span><span class="si">%(levelname)-8s</span><span class="s"> </span><span class="si">%(message)s</span><span class="s">&#39;</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="download_news"><a class="viewcode-back" href="../scrap.html#scrap.download_news">[docs]</a><span class="k">def</span> <span class="nf">download_news</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">time_range</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">pause</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Download news from meneame, and store them in the\</span>
+<span class="sd">        specified output directory.</span>
+
+<span class="sd">            :param output: the output directory</span>
+<span class="sd">            :param start: the number of page where to \</span>
+<span class="sd">            start at.</span>
+<span class="sd">            :param time_range: the time range to scrap.</span>
+<span class="sd">            :param pause: the number of seconds to wait\</span>
+<span class="sd">            after each request.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">output_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="s">&#39;raw&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">output_dir</span><span class="p">):</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">output_dir</span><span class="p">)</span>
+
+    <span class="n">current_page</span> <span class="o">=</span> <span class="n">start</span>  <span class="c"># page counter</span>
+    <span class="n">more_news</span> <span class="o">=</span> <span class="bp">True</span>
+
+    <span class="n">meneame</span> <span class="o">=</span> <span class="n">ScraperFactory</span><span class="o">.</span><span class="n">factory</span><span class="p">(</span><span class="n">SCRAPER_TYPE</span><span class="p">,</span> <span class="n">SCRAPER_BASE_URL</span><span class="p">,</span>
+                                     <span class="n">SCRAPER_NEWS_URL</span><span class="p">,</span>
+                                     <span class="n">SCRAPER_COMMENTS_URL</span><span class="p">)</span>
+
+    <span class="k">while</span> <span class="n">more_news</span><span class="p">:</span>
+        <span class="n">stories</span> <span class="o">=</span> <span class="n">meneame</span><span class="o">.</span><span class="n">scrap_page</span><span class="p">(</span><span class="n">params</span><span class="o">=</span><span class="p">{</span>
+            <span class="s">&#39;range&#39;</span><span class="p">:</span> <span class="n">time_range</span><span class="p">,</span>
+            <span class="s">&#39;page&#39;</span><span class="p">:</span> <span class="n">current_page</span><span class="p">})</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&#39;Page </span><span class="si">%s</span><span class="s">: [</span><span class="si">%s</span><span class="s">]&#39;</span><span class="p">,</span>
+                     <span class="n">current_page</span><span class="p">,</span>
+                     <span class="s">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">story</span><span class="o">.</span><span class="n">id</span><span class="p">)</span> <span class="k">for</span> <span class="n">story</span> <span class="ow">in</span> <span class="n">stories</span><span class="p">]))</span>
+        <span class="k">for</span> <span class="n">story</span> <span class="ow">in</span> <span class="n">stories</span><span class="p">:</span>
+            <span class="n">filepath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="s">&#39;</span><span class="si">%s</span><span class="s">.json&#39;</span> <span class="o">%</span> <span class="n">story</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">filepath</span><span class="p">):</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&#39;Downloading comments for </span><span class="si">%s</span><span class="s">&#39;</span><span class="p">,</span> <span class="n">story</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+                <span class="n">story</span><span class="o">.</span><span class="n">comments</span><span class="p">,</span> <span class="n">story</span><span class="o">.</span><span class="n">published</span> <span class="o">=</span> <span class="n">meneame</span><span class="o">.</span><span class="n">scrap_comments</span><span class="p">(</span>
+                    <span class="n">params</span><span class="o">=</span><span class="p">{</span><span class="s">&#39;id&#39;</span><span class="p">:</span> <span class="n">story</span><span class="o">.</span><span class="n">id</span><span class="p">})</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&#39;Writing </span><span class="si">%s</span><span class="s"> ...&#39;</span><span class="p">,</span> <span class="n">filepath</span><span class="p">)</span>
+                <span class="n">filename</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="s">&#39;w&#39;</span><span class="p">)</span>
+                <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">story</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(),</span> <span class="n">filename</span><span class="p">)</span>
+                <span class="n">filename</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+                <span class="n">sleep</span><span class="p">(</span><span class="n">pause</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s">&#39;File </span><span class="si">%s</span><span class="s"> already exists...&#39;</span><span class="p">,</span> <span class="n">story</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">stories</span><span class="p">:</span>
+            <span class="n">more_news</span> <span class="o">=</span> <span class="bp">False</span>
+
+        <span class="n">current_page</span> <span class="o">+=</span> <span class="mi">1</span>
+
+</div>
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">ARGS</span> <span class="o">=</span> <span class="n">docopt</span><span class="p">(</span><span class="n">__doc__</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="s">&#39;Meneame Scraper 1.0&#39;</span><span class="p">)</span>
+
+    <span class="c"># transform the time range to index</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">TIMERANGE</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;24h&#39;</span><span class="p">,</span> <span class="s">&#39;48h&#39;</span><span class="p">,</span>
+                            <span class="s">&#39;week&#39;</span><span class="p">,</span> <span class="s">&#39;month&#39;</span><span class="p">,</span> <span class="s">&#39;year&#39;</span><span class="p">,</span>
+                            <span class="s">&#39;all&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">ARGS</span><span class="p">[</span><span class="s">&#39;--range&#39;</span><span class="p">])</span>
+    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&#39;Error reading time range, not valid. Using </span><span class="se">\</span>
+<span class="s">            default value [24h].&#39;</span><span class="p">)</span>
+        <span class="n">TIMERANGE</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="n">download_news</span><span class="p">(</span><span class="n">output</span><span class="o">=</span><span class="n">ARGS</span><span class="p">[</span><span class="s">&#39;-o&#39;</span><span class="p">],</span>
+                  <span class="n">start</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">ARGS</span><span class="p">[</span><span class="s">&#39;--start&#39;</span><span class="p">]),</span>
+                  <span class="n">time_range</span><span class="o">=</span><span class="n">TIMERANGE</span><span class="p">,</span>
+                  <span class="n">pause</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">ARGS</span><span class="p">[</span><span class="s">&#39;--timeout&#39;</span><span class="p">]))</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../index.html">meneame  documentation</a> &raquo;</li>
+          <li><a href="index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Ferdinando, Albert, Jose.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b3.
+    </div>
+  </body>
+</html>

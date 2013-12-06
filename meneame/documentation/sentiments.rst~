@@ -1,0 +1,22 @@
+sentiments package
+==================
+
+Submodules
+----------
+
+sentiments.sentiments module
+----------------------------
+
+.. automodule:: sentiments.sentiments
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: sentiments
+    :members:
+    :undoc-members:
+    :show-inheritance:

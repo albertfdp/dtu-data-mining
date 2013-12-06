@@ -1,0 +1,46 @@
+topics package
+==============
+
+Submodules
+----------
+
+topics.meneame_tokenizer module
+-------------------------------
+
+.. automodule:: topics.meneame_tokenizer
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+topics.topic_analysis module
+----------------------------
+
+.. automodule:: topics.topic_analysis
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+topics.train_chunk_tagger module
+--------------------------------
+
+.. automodule:: topics.train_chunk_tagger
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+topics.train_pos_tagger module
+------------------------------
+
+.. automodule:: topics.train_pos_tagger
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: topics
+    :members:
+    :undoc-members:
+    :show-inheritance:

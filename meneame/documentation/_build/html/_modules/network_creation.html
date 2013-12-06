@@ -1,0 +1,142 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>network_creation &mdash; meneame  documentation</title>
+    
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="meneame  documentation" href="../index.html" />
+    <link rel="up" title="Module code" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../index.html">meneame  documentation</a> &raquo;</li>
+          <li><a href="index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for network_creation</h1><div class="highlight"><pre>
+<span class="c">#!/usr/bin/env python</span>
+<span class="c"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">The aim of the script is to build the network of users of meneame, defined</span>
+<span class="sd">as follows:</span>
+
+<span class="sd">* Each vertex is a user that has commented in one of the articles we\</span>
+<span class="sd">    analyzed. Each *vertex* has an attribute, &quot;comments&quot;, that represents\</span>
+<span class="sd">    the total number of comments an user has posted;</span>
+<span class="sd">* There is an *edge* between two users if they posted in the same article.\</span>
+<span class="sd">    Each edge has a weight representing the number of articles in which they\</span>
+<span class="sd">    posted together.</span>
+
+<span class="sd">After the network has been created, it is pickled for subsequent analysis.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c">#import igraph as ig</span>
+<span class="kn">import</span> <span class="nn">couchdb</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">itertools</span>
+<span class="kn">import</span> <span class="nn">collections</span>
+<span class="kn">from</span> <span class="nn">network.network</span> <span class="kn">import</span> <span class="n">create_graph</span>
+
+
+<div class="viewcode-block" id="main"><a class="viewcode-back" href="../network_creation.html#network_creation.main">[docs]</a><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot; Main function. &quot;&quot;&quot;</span>
+    <span class="c">#Connection with the database</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">couch</span> <span class="o">=</span> <span class="n">couchdb</span><span class="o">.</span><span class="n">Server</span><span class="p">()</span>
+        <span class="n">news_db</span> <span class="o">=</span> <span class="n">couch</span><span class="p">[</span><span class="s">&#39;meneame&#39;</span><span class="p">]</span>
+    <span class="k">except</span> <span class="n">couchdb</span><span class="o">.</span><span class="n">ResourceNotFound</span><span class="p">:</span>
+        <span class="k">print</span> <span class="s">&quot;Connection error with the database!&quot;</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="n">vertices_g</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">Counter</span><span class="p">()</span>
+    <span class="n">edges_g</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">Counter</span><span class="p">()</span>
+
+    <span class="c">#Populating vertices and edges collections</span>
+    <span class="k">for</span> <span class="n">article</span> <span class="ow">in</span> <span class="n">news_db</span><span class="p">:</span>
+        <span class="n">item</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">news_db</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">article</span><span class="p">))[</span><span class="s">&#39;commenters&#39;</span><span class="p">]</span>
+        <span class="n">vertices_g</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="o">**</span><span class="n">item</span><span class="p">)</span>
+        <span class="n">edges_g</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">itertools</span><span class="o">.</span><span class="n">combinations</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">keys</span><span class="p">(),</span> <span class="mi">2</span><span class="p">))</span>
+
+    <span class="n">graph</span> <span class="o">=</span> <span class="n">create_graph</span><span class="p">(</span><span class="n">vertices_g</span><span class="p">,</span> <span class="n">edges_g</span><span class="p">)</span>
+    <span class="n">graph</span><span class="o">.</span><span class="n">simplify</span><span class="p">(</span><span class="n">combine_edges</span><span class="o">=</span><span class="s">&#39;sum&#39;</span><span class="p">)</span>
+
+    <span class="n">graph</span><span class="o">.</span><span class="n">write_pickle</span><span class="p">(</span><span class="s">&#39;meneame_network.pickle&#39;</span><span class="p">)</span>
+</div>
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">main</span><span class="p">()</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../index.html">meneame  documentation</a> &raquo;</li>
+          <li><a href="index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Ferdinando, Albert, Jose.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b3.
+    </div>
+  </body>
+</html>

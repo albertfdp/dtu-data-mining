@@ -1,0 +1,129 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>network_creation module &mdash; meneame  documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="meneame  documentation" href="index.html" />
+    <link rel="next" title="scrap module" href="scrap.html" />
+    <link rel="prev" title="network_analysis module" href="network_analysis.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="scrap.html" title="scrap module"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="network_analysis.html" title="network_analysis module"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">meneame  documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-network_creation">
+<span id="network-creation-module"></span><h1>network_creation module<a class="headerlink" href="#module-network_creation" title="Permalink to this headline">¶</a></h1>
+<p>The aim of the script is to build the network of users of meneame, defined
+as follows:</p>
+<ul class="simple">
+<li>Each vertex is a user that has commented in one of the articles we    analyzed. Each <em>vertex</em> has an attribute, &#8220;comments&#8221;, that represents    the total number of comments an user has posted;</li>
+<li>There is an <em>edge</em> between two users if they posted in the same article.    Each edge has a weight representing the number of articles in which they    posted together.</li>
+</ul>
+<p>After the network has been created, it is pickled for subsequent analysis.</p>
+<dl class="function">
+<dt id="network_creation.main">
+<tt class="descclassname">network_creation.</tt><tt class="descname">main</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/network_creation.html#main"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#network_creation.main" title="Permalink to this definition">¶</a></dt>
+<dd><p>Main function.</p>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="network_analysis.html"
+                        title="previous chapter">network_analysis module</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="scrap.html"
+                        title="next chapter">scrap module</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/network_creation.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="scrap.html" title="scrap module"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="network_analysis.html" title="network_analysis module"
+             >previous</a> |</li>
+        <li><a href="index.html">meneame  documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Ferdinando, Albert, Jose.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b3.
+    </div>
+  </body>
+</html>
