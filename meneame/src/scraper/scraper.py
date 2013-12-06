@@ -2,7 +2,7 @@
 """
     Module for scraping meneame stories
 """
-from scrapers.model import Story, Comment
+from scraper.model import Story, Comment
 import requests
 import logging
 import feedparser
