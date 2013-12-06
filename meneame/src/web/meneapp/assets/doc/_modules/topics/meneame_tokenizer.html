@@ -1,0 +1,212 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>topics.meneame_tokenizer &mdash; meneame  documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="meneame  documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">meneame  documentation</a> &raquo;</li>
+          <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for topics.meneame_tokenizer</h1><div class="highlight"><pre>
+<span class="c"># -*- coding: utf-8 -*-</span>
+
+<span class="c"># Natural Language Toolkit: Tokenizers</span>
+<span class="c">#</span>
+<span class="c"># Copyright (C) 2001-2013 NLTK Project</span>
+<span class="c"># Author: Edward Loper &lt;edloper@gradient.cis.upenn.edu&gt;</span>
+<span class="c">#         Michael Heilman &lt;mheilman@cmu.edu&gt; \</span>
+<span class="c">#\ (re-port from http://www.cis.upenn.edu/~treebank/tokenizer.sed)</span>
+<span class="c">#         </span>
+<span class="c"># URL: &lt;http://nltk.sourceforge.net&gt;</span>
+<span class="c"># For license information, see LICENSE.TXT</span>
+<span class="c">#</span>
+<span class="c"># Modifications in lines 84 and 85 added by Jose Luis Bellod Cisneros</span>
+
+<span class="sd">r&quot;&quot;&quot;</span>
+
+<span class="sd">Penn Treebank Tokenizer</span>
+
+<span class="sd">The Treebank tokenizer uses regular expressions to tokenize text as in Penn\</span>
+<span class="sd">Treebank.</span>
+<span class="sd">This implementation is a port of the tokenizer sed script written by Robert\</span>
+<span class="sd">McIntyre</span>
+<span class="sd">and available at http://www.cis.upenn.edu/~treebank/tokenizer.sed.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">from</span> <span class="nn">nltk.tokenize.api</span> <span class="kn">import</span> <span class="n">TokenizerI</span>
+
+
+
+<div class="viewcode-block" id="TreebankWordTokenizer"><a class="viewcode-back" href="../../topics.html#topics.meneame_tokenizer.TreebankWordTokenizer">[docs]</a><span class="k">class</span> <span class="nc">TreebankWordTokenizer</span><span class="p">(</span><span class="n">TokenizerI</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The Treebank tokenizer uses regular expressions to tokenize text as in \</span>
+<span class="sd">    Penn Treebank.</span>
+<span class="sd">    This is the method that is invoked by ``word_tokenize()``.  It assumes \</span>
+<span class="sd">    that the</span>
+<span class="sd">    text has already been segmented into sentences, e.g. using \</span>
+<span class="sd">    ``sent_tokenize()``.</span>
+
+<span class="sd">    This tokenizer performs the following steps:</span>
+
+<span class="sd">    - split standard contractions, e.g. ``don&#39;t`` -&gt; ``do n&#39;t``</span>
+<span class="sd">    - treat most punctuation characters as separate tokens</span>
+<span class="sd">    - split off commas and single quotes, when followed by whitespace</span>
+<span class="sd">    - separate periods that appear at the end of line</span>
+
+<span class="sd">        &gt;&gt;&gt; from topics.meneame_tokenizer import TreebankWordTokenizer</span>
+<span class="sd">        &gt;&gt;&gt; s = &#39;&#39;&#39;Good muffins cost $3.88\\nin New York.Please buy me\\ntwo&#39;&#39;&#39;</span>
+<span class="sd">        &gt;&gt;&gt; TreebankWordTokenizer().tokenize(s)</span>
+<span class="sd">        [&#39;Good&#39;, &#39;muffins&#39;, &#39;cost&#39;, &#39;$&#39;, &#39;3.88&#39;, &#39;in&#39;, &#39;New&#39;, &#39;York.&#39;, </span>
+<span class="sd">        &#39;Please&#39;, &#39;buy&#39;, &#39;me&#39;, &#39;two&#39;]</span>
+<span class="sd">        &gt;&gt;&gt; s = &quot;They&#39;ll save and invest more.&quot;</span>
+<span class="sd">        &gt;&gt;&gt; TreebankWordTokenizer().tokenize(s)</span>
+<span class="sd">        [&#39;They&#39;, &quot;&#39;ll&quot;, &#39;save&#39;, &#39;and&#39;, &#39;invest&#39;, &#39;more&#39;, &#39;.&#39;]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c"># List of contractions adapted from Robert MacIntyre&#39;s tokenizer.</span>
+    <span class="n">CONTRACTIONS2</span> <span class="o">=</span> <span class="p">[</span><span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s">r&quot;(?i)\b(can)(not)\b&quot;</span><span class="p">),</span>
+                     <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s">r&quot;(?i)\b(d)(&#39;ye)\b&quot;</span><span class="p">),</span>
+                     <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s">r&quot;(?i)\b(gim)(me)\b&quot;</span><span class="p">),</span>
+                     <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s">r&quot;(?i)\b(gon)(na)\b&quot;</span><span class="p">),</span>
+                     <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s">r&quot;(?i)\b(got)(ta)\b&quot;</span><span class="p">),</span>
+                     <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s">r&quot;(?i)\b(lem)(me)\b&quot;</span><span class="p">),</span>
+                     <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s">r&quot;(?i)\b(mor)(&#39;n)\b&quot;</span><span class="p">),</span>
+                     <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s">r&quot;(?i)\b(wan)(na) &quot;</span><span class="p">)]</span>
+    <span class="n">CONTRACTIONS3</span> <span class="o">=</span> <span class="p">[</span><span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s">r&quot;(?i) (&#39;t)(is)\b&quot;</span><span class="p">),</span>
+                     <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s">r&quot;(?i) (&#39;t)(was)\b&quot;</span><span class="p">)]</span>
+    <span class="n">CONTRACTIONS4</span> <span class="o">=</span> <span class="p">[</span><span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s">r&quot;(?i)\b(whad)(dd)(ya)\b&quot;</span><span class="p">),</span>
+                     <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s">r&quot;(?i)\b(wha)(t)(cha)\b&quot;</span><span class="p">)]</span>
+
+<div class="viewcode-block" id="TreebankWordTokenizer.tokenize"><a class="viewcode-back" href="../../topics.html#topics.meneame_tokenizer.TreebankWordTokenizer.tokenize">[docs]</a>    <span class="k">def</span> <span class="nf">tokenize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">):</span>
+
+        <span class="c">#starting quotes</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s">r&#39;^\&quot;&#39;</span><span class="p">,</span> <span class="s">r&#39;``&#39;</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s">r&#39;(``)&#39;</span><span class="p">,</span> <span class="s">r&#39; \1 &#39;</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s">r&#39;([ (\[{&lt;])&quot;&#39;</span><span class="p">,</span> <span class="s">r&#39;\1 `` &#39;</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
+
+        <span class="c">#punctuation</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s">r&#39;([:,])([^\d])&#39;</span><span class="p">,</span> <span class="s">r&#39; \1 \2&#39;</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s">r&#39;\.\.\.&#39;</span><span class="p">,</span> <span class="s">r&#39; ... &#39;</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s">r&#39;[;@#$%&amp;]&#39;</span><span class="p">,</span> <span class="s">r&#39; \g&lt;0&gt; &#39;</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s">r&#39;([^\.])(\.)([\]\)}&gt;&quot;</span><span class="se">\&#39;</span><span class="s">]*)\s*$&#39;</span><span class="p">,</span> <span class="s">r&#39;\1 \2\3 &#39;</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s">r&#39;[?!]&#39;</span><span class="p">,</span> <span class="s">r&#39; \g&lt;0&gt; &#39;</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
+
+        <span class="n">text</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s">r&quot;([^&#39;])&#39; &quot;</span><span class="p">,</span> <span class="s">r&quot;\1 &#39; &quot;</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
+
+        <span class="c">#parens, brackets, etc.</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s">r&#39;[\]\[\(\)\{\}\&lt;\&gt;]&#39;</span><span class="p">,</span> <span class="s">r&#39; \g&lt;0&gt; &#39;</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
+        
+        <span class="c">#Spanish &#39;¿&#39; and &#39;¡&#39;</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s">r&#39;\xbf&#39;</span><span class="p">,</span> <span class="s">r&#39; \g&lt;0&gt; &#39;</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span> <span class="c"># ¿</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s">r&#39;\xa1&#39;</span><span class="p">,</span> <span class="s">r&#39; \g&lt;0&gt; &#39;</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span> <span class="c"># ¡</span>
+
+        <span class="c">#add extra space to make things easier</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="s">&quot; &quot;</span> <span class="o">+</span> <span class="n">text</span> <span class="o">+</span> <span class="s">&quot; &quot;</span>
+
+        <span class="c">#ending quotes</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s">r&#39;&quot;&#39;</span><span class="p">,</span> <span class="s">&quot; &#39;&#39; &quot;</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s">r&#39;(\S)(</span><span class="se">\&#39;\&#39;</span><span class="s">)&#39;</span><span class="p">,</span> <span class="s">r&#39;\1 \2 &#39;</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
+
+        <span class="n">text</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s">r&quot;([^&#39; ])(&#39;[sS]|&#39;[mM]|&#39;[dD]|&#39;) &quot;</span><span class="p">,</span> <span class="s">r&quot;\1 \2 &quot;</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s">r&quot;([^&#39; ])(&#39;ll|&#39;LL|&#39;re|&#39;RE|&#39;ve|&#39;VE|n&#39;t|N&#39;T) &quot;</span><span class="p">,</span> <span class="s">r&quot;\1 \2 &quot;</span><span class="p">,</span>
+                      <span class="n">text</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">regexp</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">CONTRACTIONS2</span><span class="p">:</span>
+            <span class="n">text</span> <span class="o">=</span> <span class="n">regexp</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s">r&#39; \1 \2 &#39;</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">regexp</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">CONTRACTIONS3</span><span class="p">:</span>
+            <span class="n">text</span> <span class="o">=</span> <span class="n">regexp</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s">r&#39; \1 \2 &#39;</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
+
+        <span class="c"># We are not using CONTRACTIONS4 since</span>
+        <span class="c"># they are also commented out in the SED scripts</span>
+        <span class="c"># for regexp in self.CONTRACTIONS4:</span>
+        <span class="c">#     text = regexp.sub(r&#39; \1 \2 \3 &#39;, text)</span>
+
+        <span class="k">return</span> <span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+
+</div></div>
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">doctest</span>
+    <span class="n">doctest</span><span class="o">.</span><span class="n">testmod</span><span class="p">(</span><span class="n">optionflags</span><span class="o">=</span><span class="n">doctest</span><span class="o">.</span><span class="n">NORMALIZE_WHITESPACE</span><span class="p">)</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">meneame  documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Ferdinando, Albert, Jose.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b3.
+    </div>
+  </body>
+</html>

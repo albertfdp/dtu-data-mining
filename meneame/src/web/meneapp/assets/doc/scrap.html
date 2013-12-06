@@ -1,0 +1,170 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>scrap module &mdash; meneame  documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="meneame  documentation" href="index.html" />
+    <link rel="next" title="scraper package" href="scraper.html" />
+    <link rel="prev" title="network_creation module" href="network_creation.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="scraper.html" title="scraper package"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="network_creation.html" title="network_creation module"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">meneame  documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-scrap">
+<span id="scrap-module"></span><h1>scrap module<a class="headerlink" href="#module-scrap" title="Permalink to this headline">¶</a></h1>
+<p>Meneame scraper</p>
+<dl class="docutils">
+<dt>Usage:</dt>
+<dd>scrap.py [options]</dd>
+<dt>Options:</dt>
+<dd><table class="first last docutils option-list" frame="void" rules="none">
+<col class="option" />
+<col class="description" />
+<tbody valign="top">
+<tr><td class="option-group">
+<kbd><span class="option">-h</span>, <span class="option">--help</span></kbd></td>
+<td>show this screen.</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">--version</span></kbd></td>
+<td>show version.</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">-o <var>DIRECTORY</var></span></kbd></td>
+<td>output directory [default: meneame].</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">--start <var>START</var></span></kbd></td>
+<td>specify start page [default: 0].</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">--timeout <var>TIME</var></span></kbd></td>
+<td>specify timeout after each request [default: 0].</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">--range <var>RANGE</var></span></kbd></td>
+<td>specify the range. valid options (24h | 48h | week | month | year | all) [default: 24h].</td></tr>
+</tbody>
+</table>
+</dd>
+</dl>
+<dl class="function">
+<dt id="scrap.download_news">
+<tt class="descclassname">scrap.</tt><tt class="descname">download_news</tt><big>(</big><em>output</em>, <em>start=0</em>, <em>time_range=1</em>, <em>pause=1</em><big>)</big><a class="reference internal" href="_modules/scrap.html#download_news"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrap.download_news" title="Permalink to this definition">¶</a></dt>
+<dd><p>Download news from meneame, and store them in the        specified output directory.</p>
+<blockquote>
+<div><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">param output:</th><td class="field-body">the output directory</td>
+</tr>
+<tr class="field-even field"><th class="field-name">param start:</th><td class="field-body">the number of page where to             start at.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name" colspan="2">param time_range:</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body">the time range to scrap.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">param pause:</th><td class="field-body">the number of seconds to wait            after each request.</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="network_creation.html"
+                        title="previous chapter">network_creation module</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="scraper.html"
+                        title="next chapter">scraper package</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/scrap.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="scraper.html" title="scraper package"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="network_creation.html" title="network_creation module"
+             >previous</a> |</li>
+        <li><a href="index.html">meneame  documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Ferdinando, Albert, Jose.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b3.
+    </div>
+  </body>
+</html>

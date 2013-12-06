@@ -1,0 +1,147 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>to_database module &mdash; meneame  documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="meneame  documentation" href="index.html" />
+    <link rel="next" title="topic module" href="topic.html" />
+    <link rel="prev" title="sentiments package" href="sentiments.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="topic.html" title="topic module"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="sentiments.html" title="sentiments package"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">meneame  documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-to_database">
+<span id="to-database-module"></span><h1>to_database module<a class="headerlink" href="#module-to_database" title="Permalink to this headline">¶</a></h1>
+<p>The aim of this script is to load the articles json files to the couchdbdatabase. The id in the db is set to be the same as the identifier of thearticle on the meneame webiste.</p>
+<dl class="docutils">
+<dt>Usage:</dt>
+<dd>to_database.py [&#8211;input MENEAME] [&#8211;db DATABASE]</dd>
+<dt>Options:</dt>
+<dd><table class="first last docutils option-list" frame="void" rules="none">
+<col class="option" />
+<col class="description" />
+<tbody valign="top">
+<tr><td class="option-group">
+<kbd><span class="option">-h</span>, <span class="option">--help</span></kbd></td>
+<td>show this screen.</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">--version</span></kbd></td>
+<td>show version.</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">--input <var>INPUT</var></span></kbd></td>
+<td>input folder.</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">--db <var>DATABASE</var></span></kbd></td>
+<td>output database [default: meneame].</td></tr>
+</tbody>
+</table>
+</dd>
+</dl>
+<dl class="function">
+<dt id="to_database.main">
+<tt class="descclassname">to_database.</tt><tt class="descname">main</tt><big>(</big><em>path</em>, <em>dbname</em><big>)</big><a class="reference internal" href="_modules/to_database.html#main"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#to_database.main" title="Permalink to this definition">¶</a></dt>
+<dd><p>Main function.</p>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="sentiments.html"
+                        title="previous chapter">sentiments package</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="topic.html"
+                        title="next chapter">topic module</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/to_database.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="topic.html" title="topic module"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="sentiments.html" title="sentiments package"
+             >previous</a> |</li>
+        <li><a href="index.html">meneame  documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Ferdinando, Albert, Jose.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b3.
+    </div>
+  </body>
+</html>

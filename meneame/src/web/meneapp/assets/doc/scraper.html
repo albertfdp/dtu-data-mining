@@ -1,0 +1,332 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>scraper package &mdash; meneame  documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="meneame  documentation" href="index.html" />
+    <link rel="next" title="sentiment module" href="sentiment.html" />
+    <link rel="prev" title="scrap module" href="scrap.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="sentiment.html" title="sentiment module"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="scrap.html" title="scrap module"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">meneame  documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="scraper-package">
+<h1>scraper package<a class="headerlink" href="#scraper-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-scraper">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-scraper" title="Permalink to this headline">¶</a></h2>
+<p>Scraper module</p>
+<p>Contains Scraper classes for scraping and cleaning from social news websites. Currently it also implements a    scraper for Menéame.</p>
+</div>
+<div class="section" id="module-scraper.cleaner">
+<span id="scraper-cleaner-module"></span><h2>scraper.cleaner module<a class="headerlink" href="#module-scraper.cleaner" title="Permalink to this headline">¶</a></h2>
+<p>This module contains the necessary functions for cleaning the articles.</p>
+<dl class="function">
+<dt id="scraper.cleaner.strip_html_tags">
+<tt class="descclassname">scraper.cleaner.</tt><tt class="descname">strip_html_tags</tt><big>(</big><em>html</em><big>)</big><a class="reference internal" href="_modules/scraper/cleaner.html#strip_html_tags"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scraper.cleaner.strip_html_tags" title="Permalink to this definition">¶</a></dt>
+<dd><p>Strip out all html tags from the input text.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>html</strong> &#8211; input html string</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">the input string stripped of all html tags</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="scraper.cleaner.test_strip_html_tags">
+<tt class="descclassname">scraper.cleaner.</tt><tt class="descname">test_strip_html_tags</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/scraper/cleaner.html#test_strip_html_tags"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scraper.cleaner.test_strip_html_tags" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test for the strip_html_tags function.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-scraper.model">
+<span id="scraper-model-module"></span><h2>scraper.model module<a class="headerlink" href="#module-scraper.model" title="Permalink to this headline">¶</a></h2>
+<p>Python classes for that model the data used in the scripts.</p>
+<dl class="class">
+<dt id="scraper.model.Comment">
+<em class="property">class </em><tt class="descclassname">scraper.model.</tt><tt class="descname">Comment</tt><big>(</big><em>story</em>, <em>order=None</em>, <em>karma=None</em>, <em>user=None</em>, <em>votes=None</em>, <em>cid=None</em>, <em>published=None</em>, <em>summary=None</em><big>)</big><a class="reference internal" href="_modules/scraper/model.html#Comment"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scraper.model.Comment" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>A comment</p>
+<dl class="method">
+<dt id="scraper.model.Comment.to_dict">
+<tt class="descname">to_dict</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/scraper/model.html#Comment.to_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scraper.model.Comment.to_dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts the class to a dictionary to be handled as a JSON</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="scraper.model.Story">
+<em class="property">class </em><tt class="descclassname">scraper.model.</tt><tt class="descname">Story</tt><big>(</big><em>sid=None</em>, <em>votes=None</em>, <em>clicks=None</em>, <em>title=None</em>, <em>url=None</em>, <em>author=None</em>, <em>description=None</em>, <em>published=None</em>, <em>comments=None</em><big>)</big><a class="reference internal" href="_modules/scraper/model.html#Story"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scraper.model.Story" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>A story</p>
+<dl class="method">
+<dt id="scraper.model.Story.to_dict">
+<tt class="descname">to_dict</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/scraper/model.html#Story.to_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scraper.model.Story.to_dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts the class to a dictionary to be handled as a JSON</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-scraper.scraper">
+<span id="scraper-scraper-module"></span><h2>scraper.scraper module<a class="headerlink" href="#module-scraper.scraper" title="Permalink to this headline">¶</a></h2>
+<p>Module for scraping meneame stories</p>
+<dl class="class">
+<dt id="scraper.scraper.MeneameScraper">
+<em class="property">class </em><tt class="descclassname">scraper.scraper.</tt><tt class="descname">MeneameScraper</tt><big>(</big><em>base_url</em>, <em>stories_url</em>, <em>comments_url</em><big>)</big><a class="reference internal" href="_modules/scraper/scraper.html#MeneameScraper"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scraper.scraper.MeneameScraper" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#scraper.scraper.Scraper" title="scraper.scraper.Scraper"><tt class="xref py py-class docutils literal"><span class="pre">scraper.scraper.Scraper</span></tt></a></p>
+<p>Implementation of the class Scraper. Provides methods for        obtaining meename stories and comments.</p>
+<dl class="method">
+<dt id="scraper.scraper.MeneameScraper.extract_comments">
+<tt class="descname">extract_comments</tt><big>(</big><em>sid</em>, <em>text</em><big>)</big><a class="reference internal" href="_modules/scraper/scraper.html#MeneameScraper.extract_comments"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scraper.scraper.MeneameScraper.extract_comments" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extracts comments from a XML string. The parsing is done
+using feedparser library.</p>
+<blockquote>
+<div><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">param sid:</th><td class="field-body">the id of the new.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">param text:</th><td class="field-body">the RSS xml.</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+</dd></dl>
+
+<dl class="method">
+<dt id="scraper.scraper.MeneameScraper.extract_stories">
+<tt class="descname">extract_stories</tt><big>(</big><em>text</em><big>)</big><a class="reference internal" href="_modules/scraper/scraper.html#MeneameScraper.extract_stories"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scraper.scraper.MeneameScraper.extract_stories" title="Permalink to this definition">¶</a></dt>
+<dd><p>Implementation of extract stories from the given             HTTP text. Returns a list of Stories.</p>
+<blockquote>
+<div><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">param text:</th><td class="field-body">a string read from an HTTP request.</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="scraper.scraper.Scraper">
+<em class="property">class </em><tt class="descclassname">scraper.scraper.</tt><tt class="descname">Scraper</tt><big>(</big><em>base_url</em>, <em>stories_url</em>, <em>comments_url</em><big>)</big><a class="reference internal" href="_modules/scraper/scraper.html#Scraper"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scraper.scraper.Scraper" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>Abstract class Scraper which provides the basic methods for        scraping a social news website. It relies on subclasses for        specific methods.</p>
+<dl class="method">
+<dt id="scraper.scraper.Scraper.extract_comments">
+<tt class="descname">extract_comments</tt><big>(</big><em>sid</em>, <em>text</em><big>)</big><a class="reference internal" href="_modules/scraper/scraper.html#Scraper.extract_comments"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scraper.scraper.Scraper.extract_comments" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extract comments from the given HTTP text. Should be            implemented by subclasses of this Scraper class.</p>
+<blockquote>
+<div><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">param sid:</th><td class="field-body">the id of the new of these comments.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">param text:</th><td class="field-body">a string read from an HTTP request.</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+</dd></dl>
+
+<dl class="method">
+<dt id="scraper.scraper.Scraper.extract_stories">
+<tt class="descname">extract_stories</tt><big>(</big><em>text</em><big>)</big><a class="reference internal" href="_modules/scraper/scraper.html#Scraper.extract_stories"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scraper.scraper.Scraper.extract_stories" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extract stories from the given HTTP text. Should be            implemented by subclasses of this Scraper class.</p>
+<blockquote>
+<div><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">param text:</th><td class="field-body">a string read from an HTTP request.</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+</dd></dl>
+
+<dl class="method">
+<dt id="scraper.scraper.Scraper.scrap_comments">
+<tt class="descname">scrap_comments</tt><big>(</big><em>params</em><big>)</big><a class="reference internal" href="_modules/scraper/scraper.html#Scraper.scrap_comments"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scraper.scraper.Scraper.scrap_comments" title="Permalink to this definition">¶</a></dt>
+<dd><p>Requests a given HTTP page given the provided GET            parameters. Returns a list of Comments.</p>
+<blockquote>
+<div><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">param params:</th><td class="field-body">a dictionary of GET parameters.</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+</dd></dl>
+
+<dl class="method">
+<dt id="scraper.scraper.Scraper.scrap_page">
+<tt class="descname">scrap_page</tt><big>(</big><em>params</em><big>)</big><a class="reference internal" href="_modules/scraper/scraper.html#Scraper.scrap_page"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scraper.scraper.Scraper.scrap_page" title="Permalink to this definition">¶</a></dt>
+<dd><p>Requests a given HTTP page given the provided GET            parameters. Returns a list of Stories.</p>
+<blockquote>
+<div><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">param params:</th><td class="field-body">a dictionary of GET parameters.</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="scraper.scraper.ScraperFactory">
+<em class="property">class </em><tt class="descclassname">scraper.scraper.</tt><tt class="descname">ScraperFactory</tt><a class="reference internal" href="_modules/scraper/scraper.html#ScraperFactory"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scraper.scraper.ScraperFactory" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>ScraperFactory: returns a Scraper implementation.</p>
+<dl class="staticmethod">
+<dt id="scraper.scraper.ScraperFactory.factory">
+<em class="property">static </em><tt class="descname">factory</tt><big>(</big><em>scrapper_type</em>, <em>base_url</em>, <em>stories_url</em>, <em>comments_url</em><big>)</big><a class="reference internal" href="_modules/scraper/scraper.html#ScraperFactory.factory"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scraper.scraper.ScraperFactory.factory" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a scrapper implementation.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="scraper.scraper.test_extract_comments">
+<tt class="descclassname">scraper.scraper.</tt><tt class="descname">test_extract_comments</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/scraper/scraper.html#test_extract_comments"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scraper.scraper.test_extract_comments" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test for the extract_comments function.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="scraper.scraper.test_extract_stories">
+<tt class="descclassname">scraper.scraper.</tt><tt class="descname">test_extract_stories</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/scraper/scraper.html#test_extract_stories"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scraper.scraper.test_extract_stories" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test for the extract_stories function.</p>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">scraper package</a><ul>
+<li><a class="reference internal" href="#module-scraper">Module contents</a></li>
+<li><a class="reference internal" href="#module-scraper.cleaner">scraper.cleaner module</a></li>
+<li><a class="reference internal" href="#module-scraper.model">scraper.model module</a></li>
+<li><a class="reference internal" href="#module-scraper.scraper">scraper.scraper module</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="scrap.html"
+                        title="previous chapter">scrap module</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="sentiment.html"
+                        title="next chapter">sentiment module</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/scraper.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="sentiment.html" title="sentiment module"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="scrap.html" title="scrap module"
+             >previous</a> |</li>
+        <li><a href="index.html">meneame  documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Ferdinando, Albert, Jose.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b3.
+    </div>
+  </body>
+</html>
