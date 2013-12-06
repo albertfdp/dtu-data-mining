@@ -6,6 +6,11 @@ Analysing a Social News Website: Menéame
 
 The results can be found [here](http://meneapp.appspot.com)
 
+Documentation
+------
+
+Documentation of the code can be found [here](http://meneapp.appspot.com/assets/doc/index.html)
+
 Authors
 ------
 
