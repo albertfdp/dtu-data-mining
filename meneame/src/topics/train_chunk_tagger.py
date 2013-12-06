@@ -165,18 +165,6 @@ def test_chunk_tagger():
 
     from nltk.tokenize import word_tokenize
 
-    def traverse(t):
-        try:
-            t.node
-        except AttributeError:
-            print t,
-        else:
-            # Now we know that t.node is defined
-            print '(', t.node,
-            for child in t:
-                traverse(child)
-            print ')',
-
     logging.info('Loading PoS tagger')
     pos_tag = pickle.load(open("tmp/pos_tagger.p", "rb")).tag
     logging.info('Loading Chunk tagger')
