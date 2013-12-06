@@ -164,42 +164,47 @@ def test_chunk_tagger():
     """
 
     from nltk.tokenize import word_tokenize
-    from topics.train_chunk_tagger import ConsecutiveNPChunker
-    from topics.train_chunk_tagger import ConsecutiveNPChunkTagger
+
+    def traverse(t):
+        try:
+            t.node
+        except AttributeError:
+            print t,
+        else:
+            # Now we know that t.node is defined
+            print '(', t.node,
+            for child in t:
+                traverse(child)
+            print ')',
 
     logging.info('Loading PoS tagger')
     pos_tag = pickle.load(open("tmp/pos_tagger.p", "rb")).tag
     logging.info('Loading Chunk tagger')
     chunk_tag = pickle.load(open("tmp/chunk_tagger.p", "rb")).parse
+    loc = nltk.Tree('LOC', [(u'santander', u'NC')])
+    org = nltk.Tree('ORG', [(u'izquierda', u'NC')])
+
+    test_tree = nltk.Tree('S', [org,
+    (u'unida', u'AQ'),
+    (u'de', u'SP'),
+    loc,
+    (unicode('presentó', 'utf-8'), u'VMI'),
+    (u'hoy', u'RG'),
+    (u'su', u'DP'),
+    (u'nuevo', u'AQ'),
+    (unicode('boletín', 'utf-8'), u'NC'),
+    (u'trimestral', u'AQ')])
+
     string = unicode(
         """Izquierda Unida de Santander presentó hoy su nuevo boletín\
-trimestral""",
+ trimestral""",
         'utf-8'
     )
     tokens = [token.lower() for token in word_tokenize(string)]
     pos_tokens = pos_tag(tokens)
     result = chunk_tag(pos_tokens)
 
-    loc = nltk.Tree('LOC', [(u'santander', u'NC')])
-    org = nltk.Tree('ORG', [(u'izquierda', u'NC')])
-    test = nltk.Tree
-    (
-        'S',
-        [
-            org,
-            (u'unida', u'AQ'),
-            (u'de', u'SP'),
-            loc,
-            (unicode('presentó', 'utf-8'), u'VMI'),
-            (u'hoy', u'RG'),
-            (u'su', u'DP'),
-            (u'nuevo', 'AQ'),
-            (unicode('boletín', 'utf-8'), u'NC'),
-            (u'trimestral', u'AQ')
-        ]
-    )
-
-    assert result == test
+    assert result == test_tree
 
 
 def main():

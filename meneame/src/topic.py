@@ -36,7 +36,7 @@ def main(window, topics, dbname):
           :param dbname: the name of the database
 
     """
-
+    
     couch = couchdb.Server()
     database = couch[dbname]
     logging.info('Established connection with the db %s', database)
@@ -47,7 +47,7 @@ def main(window, topics, dbname):
     logging.info('Loading Chunk tagger')
     chunker = pickle.load(open("topics/tmp/chunk_tagger.p", "rb")).parse
 
-    get_topics(tagger, chunker, database, window, topics)
+    get_topics(tagger, chunker, database, int(window), int(topics))
 
 if __name__ == '__main__':
     ARGS = docopt(__doc__, version='Meneame Topics 1.0')

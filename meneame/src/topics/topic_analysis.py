@@ -246,8 +246,7 @@ def get_topics(tagger_es, chunker_es, news_db, window_size=10, num_topics=35):
         if index == 0:  # first time
             last_date = post['published']
             index += 1
-        print post['published']
-        print last_date
+
         if (post['published'] - last_date).days < window_size:
             if post['description'] is not None:
                 time_slices[last_date].append(
@@ -260,7 +259,6 @@ def get_topics(tagger_es, chunker_es, news_db, window_size=10, num_topics=35):
                 mssg_id += 1
         else:
         # New 10-day timeslice
-            print 'do thinnhgs'
             # Creating tokens
             texts = tokenize_text(time_slices[last_date], sent_es_token)
 
