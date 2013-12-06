@@ -17,7 +17,7 @@ Options:
 """
 import logging
 import json
-from scrapers.scraper import ScraperFactory
+from scraper.scraper import ScraperFactory
 from docopt import docopt
 from time import sleep
 import os

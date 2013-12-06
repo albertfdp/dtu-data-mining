@@ -1,9 +1,8 @@
 """
-	The menestats module
+	The sentiment analysis module
 	=====
 
-	sfa
-	---
-
-	mdaldm
+	Provides the required methods and tools to perform\
+	sentiment analysis to texts.
+	
 """
