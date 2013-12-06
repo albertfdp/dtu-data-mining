@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-This module contains the functions the network analysis and creation.
+This module contains the functions for the network analysis and creation.
 """
 
 import igraph as ig
