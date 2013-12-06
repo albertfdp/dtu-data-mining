@@ -3,13 +3,14 @@
 """
     Module for scraping meneame stories
 """
-from scraper.model import Story, Comment
+from model import Story, Comment
 import requests
 import logging
 import feedparser
 from bs4 import BeautifulSoup
 import re
 import os
+
 
 class ScraperFactory(object):
     """
@@ -23,6 +24,7 @@ class ScraperFactory(object):
         if scrapper_type == 'meneame':
             return MeneameScraper(base_url, stories_url, comments_url)
     factory = staticmethod(factory)
+
 
 class Scraper(object):
     """
@@ -104,6 +106,7 @@ class Scraper(object):
         """
         pass
 
+
 class MeneameScraper(Scraper):
     """
         Implementation of the class Scraper. Provides methods for\
@@ -111,8 +114,8 @@ class MeneameScraper(Scraper):
     """
 
     def __init__(self, base_url, stories_url, comments_url):
-        super(MeneameScraper, self).__init__(base_url,
-              stories_url, comments_url)
+        super(MeneameScraper,
+              self).__init__(base_url, stories_url, comments_url)
 
     def extract_stories(self, text):
         """
@@ -220,6 +223,7 @@ class MeneameScraper(Scraper):
             comments.append(meneame_comment)
 
         return comments, published
+
 
 def test_extract_stories():
     """
