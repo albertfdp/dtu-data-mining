@@ -92,6 +92,7 @@ d3.json('assets/data/sentiment_description.json', function(data) {
         .dimension(dayDimension)
         .group(dailyVotes)
         .ordinalColors(['#fd8d3c'])
+        .brushOn(false)
         .centerBar(true)
         .gap(15)
         .x(d3.time.scale().domain([new Date(2012, 9, 1), new Date(2013, 9, 1)]))

@@ -89,7 +89,7 @@ d3.json('assets/data/topic_news.json', function(data) {
                 var t = dd.key.split("-");
                 aux.push(t[1]);
             });  
-            return aux.join("\n");      
+            return aux.slice(0,15).join("\n");      
         
         })
         .map(titlesPerTopic.group().all().filter(function(d){return d.key!=undefined}), d3.map);

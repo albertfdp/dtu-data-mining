@@ -25,5 +25,5 @@ app = webapp2.WSGIApplication([
 	('/sentiment', sentiment.SentimentHandler),
 	('/network', network.NetworkHandler),
 	('/topics', topics.TopicsHandler),
-	('/about', about.AboutHandler)
+	('/about', main.MainHandler)
 ], debug=True)
